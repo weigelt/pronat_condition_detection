@@ -1,4 +1,4 @@
-senna_wrapper_master:
+condition_detection_master:
     script:
         - mvn source:jar deploy -B
     tags:
@@ -6,7 +6,7 @@ senna_wrapper_master:
     only:
         - master
 
-senna_wrapper_branches:
+condition_detection_branches:
     script:
         - mvn test -B
     tags:
