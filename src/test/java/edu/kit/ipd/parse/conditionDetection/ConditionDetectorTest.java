@@ -13,7 +13,6 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.ParseNode;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
-import edu.kit.ipd.parse.shallownlp.WordPosType;
 
 public class ConditionDetectorTest {
 	ConditionDetector dt;
@@ -33,11 +32,8 @@ public class ConditionDetectorTest {
 	@Test
 	public void executeProject() {
 		input = "Go to the fridge open the fridge if they are fresh oranges take the oranges and the water if there are no fresh oranges take the orange juice and the water close the fridge and take them to the table";
-		String[] words = { "put" };
-		String[] pos = { "VB" };
-		WordPosType w = new WordPosType(words, pos);
 		try {
-			actual = snlp.parse(input, w);
+			actual = snlp.parse(input, null);
 		} catch (IOException | URISyntaxException | InterruptedException e) {
 			e.printStackTrace();
 		}
