@@ -10,12 +10,11 @@ import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
-import edu.kit.ipd.parse.luna.graph.ParseArcType;
 
 /**
  * This class concadinates the spotted statements and fills the ContainerClasses
  * with their belonging nodes.
- * 
+ *
  * @author Vanessa Steurer
  */
 public class StatementExtractor {
@@ -71,8 +70,8 @@ public class StatementExtractor {
 					currStmtPos++;
 				}
 				if (currStmtPos > endOfIfStmt) {
-					logger.debug(
-							"Found section with missing commandtype. Set INDP-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1) + ".");
+					logger.debug("Found section with missing commandtype. Set INDP-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1)
+							+ ".");
 				}
 
 				// IF + THEN
@@ -83,8 +82,8 @@ public class StatementExtractor {
 					currStmtPos++;
 				}
 				if (currStmtPos > endOfIfStmt) {
-					logger.debug(
-							"Found section with missing commandtype. Set IF-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1) + ".");
+					logger.debug("Found section with missing commandtype. Set IF-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1)
+							+ ".");
 				}
 			}
 		}
@@ -108,7 +107,7 @@ public class StatementExtractor {
 			endOfStmt = currStmtPos;
 
 			if (elseHints.get(i).isDummy()) {
-				// IF + INDP, no ELSE	
+				// IF + INDP, no ELSE
 				if (thenHints.get(i).isDummy()) {
 					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
 						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
@@ -195,20 +194,25 @@ public class StatementExtractor {
 	/**
 	 * This method looks again for then-Statements, considering the
 	 * null-sections after the if-Statement.
-	 * 
+	 *
 	 * First check: The heuristic could have been failed and settet INDP,
 	 * because the chosen keyword is invalid. Therefore this method checks, if
 	 * the vP+NP heuristic passes, when it starts checking after directly after
 	 * if clause.
-	 * 
-	 * @param nodes of the graph
-	 * @param spottedConditions in the input text
-	 * @param thenHints in the input text
-	 * @param i : number of the spotted conditions
-	 * @param currStmtPos : first word after if-statement
+	 *
+	 * @param nodes
+	 *            of the graph
+	 * @param spottedConditions
+	 *            in the input text
+	 * @param thenHints
+	 *            in the input text
+	 * @param i
+	 *            : number of the spotted conditions
+	 * @param currStmtPos
+	 *            : first word after if-statement
 	 */
 	private static void checkForFalseThenKeyword(INode[] nodes, List<ConditionContainer> spottedConditions, List<Keyword> thenHints, int i,
-			int endOfIfStmt, int nextStmt) { // If then-keyword has been chosen wrongly, check then-heuristic VP + NP 
+			int endOfIfStmt, int nextStmt) { // If then-keyword has been chosen wrongly, check then-heuristic VP + NP
 		int lookForVerb = endOfIfStmt;
 		boolean foundVerb = false; // If no verbs are found up to the next statement, break
 
@@ -321,8 +325,9 @@ public class StatementExtractor {
 			for (IArc arc : nodes[j].getOutgoingArcs()) {
 				if (arc.getType().getName().equalsIgnoreCase("coref")) { // Coref-arc to another part of the THEN- or ELSE-stmt
 					INode target = arc.getTargetNode();
-					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
-							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
+					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target)
+							|| (spottedConditions.get(i).hasElseStmt() && spottedConditions.get(i).getElseStmt().getNodeList()
+									.contains(target))) {
 						corefSearchIndex = j;
 						foundCoref = true;
 						logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
@@ -370,9 +375,11 @@ public class StatementExtractor {
 	 * If no statements are found in the input text, the cmdtype-attribute of
 	 * every node has to be set to INDP-Stmt. Otherwise sets INDP-Stmt to nodes
 	 * till first spotted-If-Stmt/Keyword.
-	 * 
-	 * @param nodes of the graph
-	 * @param ifHints which are spotted in the graph
+	 *
+	 * @param nodes
+	 *            of the graph
+	 * @param ifHints
+	 *            which are spotted in the graph
 	 */
 	private static void setCmdtypeIfNoStmtFound(INode[] nodes, List<Keyword> ifHints) {
 		if (ifHints.isEmpty()) { // If no if-clauses found set cmdtype=INDP to all nodes of the input
@@ -397,15 +404,22 @@ public class StatementExtractor {
 	 * cmdtype of the node which the arcs points to second abttribute:
 	 * commandTypeLocation. Gives the location of the node in the
 	 * conditionStatement (begin, mid, end).
-	 * 
-	 * @param graph which is given, results has to be saved in it
-	 * @param nodes of the graph
-	 * @param spottedConditions of the input text
+	 *
+	 * @param graph
+	 *            which is given, results has to be saved in it
+	 * @param nodes
+	 *            of the graph
+	 * @param spottedConditions
+	 *            of the input text
 	 */
 	public static void transformGraph(IGraph graph, INode[] nodes, List<ConditionContainer> spottedConditions) {
-		IArcType arcType = null;
+		IArcType arcType;
 		if (ConditionDetector.firstRun) { // Add arctype "statement"
-			arcType = new ParseArcType(STATEMENT_ARC_TYPE);
+			if (graph.hasArcType(STATEMENT_ARC_TYPE)) {
+				arcType = graph.getArcType(STATEMENT_ARC_TYPE);
+			} else {
+				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
+			}
 			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
 			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
 			logger.info("Transform graph according to the spotted conditions.");
@@ -420,7 +434,11 @@ public class StatementExtractor {
 			for (int i = 0; i < arcsToDelete.size(); i++) {
 				graph.deleteArc(arcsToDelete.get(i));
 			}
-			arcType = new ParseArcType(STATEMENT_ARC_TYPE);
+			if (graph.hasArcType(STATEMENT_ARC_TYPE)) {
+				arcType = graph.getArcType(STATEMENT_ARC_TYPE);
+			} else {
+				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
+			}
 			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
 			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
 			logger.info("Transform graph according to the spotted conditions.");
