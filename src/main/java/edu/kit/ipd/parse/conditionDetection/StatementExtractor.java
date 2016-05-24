@@ -19,6 +19,9 @@ import edu.kit.ipd.parse.luna.graph.ParseArcType;
  * @author Vanessa Steurer
  */
 public class StatementExtractor {
+	private static final String COMMANDTYPELOCATION_ATTRIBUTE = "commandTypeLocation";
+	private static final String COMMANDTYPE_ATTRIBUTE = "commandType";
+	private static final String STATEMENT_ARC_TYPE = "statement";
 	private static final Logger logger = LoggerFactory.getLogger(StatementExtractor.class);
 
 	private StatementExtractor() {
@@ -41,8 +44,8 @@ public class StatementExtractor {
 			}
 			logger.info("Concat if with then block for detected clause number " + (i + 1) + ".");
 
-			while (nodes[currStmtPos].getAttributeValue("commandType") != null // Skip If-Statement
-					&& (nodes[currStmtPos].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT))) {
+			while (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip If-Statement
+					&& (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.IF_STATEMENT))) {
 				spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[currStmtPos]);
 				currStmtPos++;
 				if (currStmtPos >= nodes.length) {
@@ -61,8 +64,8 @@ public class StatementExtractor {
 			if (thenHints.get(i).isDummy()) {
 				checkForFalseThenKeyword(nodes, spottedConditions, thenHints, i, endOfIfStmt, nextStmt); // updates spottedConditions
 
-				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-					nodes[currStmtPos].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+					nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 					spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 					spottedConditions.get(i).getThenStmt().setINDP();
 					currStmtPos++;
@@ -74,8 +77,8 @@ public class StatementExtractor {
 
 				// IF + THEN
 			} else {
-				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-					nodes[currStmtPos].setAttributeValue("commandType", CommandType.IF_STATEMENT);
+				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+					nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.IF_STATEMENT);
 					spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[currStmtPos]);
 					currStmtPos++;
 				}
@@ -107,8 +110,8 @@ public class StatementExtractor {
 			if (elseHints.get(i).isDummy()) {
 				// IF + INDP, no ELSE	
 				if (thenHints.get(i).isDummy()) {
-					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-						nodes[currStmtPos].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 						spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 						spottedConditions.get(i).getThenStmt().setINDP();
 						currStmtPos++;
@@ -126,15 +129,15 @@ public class StatementExtractor {
 
 						if (currStmtPos > corefSearchBegin) {
 							for (int j = corefSearchBegin; j <= currStmtPos; j++) {
-								nodes[j].setAttributeValue("commandType", CommandType.THEN_STATEMENT);
+								nodes[j].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
 								spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[j]);
 							}
 							currStmtPos++;
 						}
 					}
 
-					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-						nodes[currStmtPos].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 						currStmtPos++;
 					}
 				}
@@ -142,8 +145,8 @@ public class StatementExtractor {
 			} else {
 				// IF + INDP + ELSE
 				if (thenHints.get(i).isDummy()) {
-					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-						nodes[currStmtPos].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 						spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 						spottedConditions.get(i).getThenStmt().setINDP();
 						currStmtPos++;
@@ -155,8 +158,8 @@ public class StatementExtractor {
 
 					// IF + THEN + ELSE
 				} else {
-					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-						nodes[currStmtPos].setAttributeValue("commandType", CommandType.THEN_STATEMENT);
+					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
 						spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 						currStmtPos++;
 					}
@@ -177,8 +180,8 @@ public class StatementExtractor {
 
 	private static int skipThenOrIndpStmt(INode[] nodes, List<ConditionContainer> spottedConditions, int i, int currStmt,
 			CommandType cmdtype) {
-		while (nodes[currStmt].getAttributeValue("commandType") != null // Skip IF,THEN or INDP-Statement
-				&& (nodes[currStmt].getAttributeValue("commandType").equals(cmdtype))) {
+		while (nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip IF,THEN or INDP-Statement
+				&& (nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(cmdtype))) {
 			spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmt]);
 			currStmt++;
 			if (currStmt >= nodes.length) {
@@ -245,17 +248,17 @@ public class StatementExtractor {
 
 		// Set nodes with cmdtype=null BEFORE this block to IF_STMT zu, overwrite nodes with cmdtype=INDP to cmdtype=THEN
 		for (int k = endOfIfStmt; k < lookForVerb; k++) {
-			nodes[k].setAttributeValue("commandType", CommandType.IF_STATEMENT);
+			nodes[k].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.IF_STATEMENT);
 			spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[k]);
 		}
 
 		for (int k = lookForVerb; k < endOfThen; k++) {
-			nodes[k].setAttributeValue("commandType", CommandType.THEN_STATEMENT);
+			nodes[k].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
 		}
 		int indp = lookForVerb;
-		while (nodes[indp].getAttributeValue("commandType") != null
-				&& nodes[indp].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT)) {
-			nodes[indp].setAttributeValue("commandType", CommandType.THEN_STATEMENT);
+		while (nodes[indp].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null
+				&& nodes[indp].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.INDEPENDENT_STATEMENT)) {
+			nodes[indp].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
 			indp++;
 			if (indp >= nodes.length) {
 				indp--;
@@ -274,8 +277,8 @@ public class StatementExtractor {
 				spottedConditions.get(i).setElseStmt(new ElseStatement(new ArrayList<INode>()));
 				int currStmtPos = elseHints.get(i).getKeywordBegin();
 
-				while (nodes[currStmtPos].getAttributeValue("commandType") != null // Skip ELSE-Statement
-						&& nodes[currStmtPos].getAttributeValue("commandType").equals(CommandType.ELSE_STATEMENT)) {
+				while (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip ELSE-Statement
+						&& nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.ELSE_STATEMENT)) {
 					spottedConditions.get(i).getElseStmt().addNodeToNodeList(nodes[currStmtPos]);
 					currStmtPos++;
 					if (currStmtPos >= nodes.length) {
@@ -290,15 +293,15 @@ public class StatementExtractor {
 
 					if (currStmtPos > corefSearchBegin) {
 						for (int j = corefSearchBegin; j <= currStmtPos; j++) {
-							nodes[j].setAttributeValue("commandType", CommandType.ELSE_STATEMENT);
+							nodes[j].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.ELSE_STATEMENT);
 							spottedConditions.get(i).getElseStmt().addNodeToNodeList(nodes[j]);
 						}
 						currStmtPos++;
 					}
 				}
 
-				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue("commandType") == null) {
-					nodes[currStmtPos].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
+					nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 					currStmtPos++;
 				}
 			}
@@ -309,8 +312,8 @@ public class StatementExtractor {
 		int nextStmt = corefSearchIndex;
 		boolean foundCoref = false;
 
-		while (nextStmt < nodes.length && (nodes[nextStmt].getAttributeValue("commandType") == null // Look for next statement
-				|| nodes[nextStmt].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT))) {
+		while (nextStmt < nodes.length && (nodes[nextStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null // Look for next statement
+				|| nodes[nextStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.INDEPENDENT_STATEMENT))) {
 			nextStmt++;
 		}
 
@@ -374,14 +377,14 @@ public class StatementExtractor {
 	private static void setCmdtypeIfNoStmtFound(INode[] nodes, List<Keyword> ifHints) {
 		if (ifHints.isEmpty()) { // If no if-clauses found set cmdtype=INDP to all nodes of the input
 			for (int i = 0; i < nodes.length; i++) {
-				nodes[i].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+				nodes[i].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 			}
 			logger.debug("Set commandtype INDP-Statement to complete text.");
 
 		} else { // If there are nodes before the first if-stmt with cmdtype=null, set cmdtype=INDP
 			int firstIfStmt = ifHints.get(0).getKeywordBegin();
 			for (int i = 0; i < firstIfStmt; i++) {
-				nodes[i].setAttributeValue("commandType", CommandType.INDEPENDENT_STATEMENT);
+				nodes[i].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
 			}
 		}
 	}
@@ -402,24 +405,24 @@ public class StatementExtractor {
 	public static void transformGraph(IGraph graph, INode[] nodes, List<ConditionContainer> spottedConditions) {
 		IArcType arcType = null;
 		if (ConditionDetector.firstRun) { // Add arctype "statement"
-			arcType = new ParseArcType("statement");
-			arcType.addAttributeToType("String", "commandType");
-			arcType.addAttributeToType("String", "commandTypeLocation");
+			arcType = new ParseArcType(STATEMENT_ARC_TYPE);
+			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
 			logger.info("Transform graph according to the spotted conditions.");
 
 		} else { // Add arctype "statement". Delete arcs of conditionDetection-run before!!
 			List<IArc> arcsToDelete = new ArrayList<IArc>();
 			for (IArc arc : graph.getArcs()) {
-				if (arc.getType().getName().equalsIgnoreCase("statement")) {
+				if (arc.getType().getName().equalsIgnoreCase(STATEMENT_ARC_TYPE)) {
 					arcsToDelete.add(arc);
 				}
 			}
 			for (int i = 0; i < arcsToDelete.size(); i++) {
 				graph.deleteArc(arcsToDelete.get(i));
 			}
-			arcType = new ParseArcType("statement");
-			arcType.addAttributeToType("String", "commandType");
-			arcType.addAttributeToType("String", "commandTypeLocation");
+			arcType = new ParseArcType(STATEMENT_ARC_TYPE);
+			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
 			logger.info("Transform graph according to the spotted conditions.");
 		}
 
@@ -505,19 +508,19 @@ public class StatementExtractor {
 
 		for (int j = beginStmt; j < endStmt; j++) {
 			IArc arc = graph.createArc(nodes[j], nodes[j + 1], arcType);
-			arc.setAttributeValue("commandType", stmt);
+			arc.setAttributeValue(COMMANDTYPE_ATTRIBUTE, stmt);
 
 			if (j + 1 != endStmt) {
-				arc.setAttributeValue("commandTypeLocation", "mid");
+				arc.setAttributeValue(COMMANDTYPELOCATION_ATTRIBUTE, "mid");
 			} else {
-				arc.setAttributeValue("commandTypeLocation", "end");
+				arc.setAttributeValue(COMMANDTYPELOCATION_ATTRIBUTE, "end");
 			}
 		}
 	}
 
 	private static void createStmtConnectionArcs(IArc arc, String stmt) {
-		arc.setAttributeValue("commandType", stmt);
-		arc.setAttributeValue("commandTypeLocation", "begin");
+		arc.setAttributeValue(COMMANDTYPE_ATTRIBUTE, stmt);
+		arc.setAttributeValue(COMMANDTYPELOCATION_ATTRIBUTE, "begin");
 	}
 
 }
