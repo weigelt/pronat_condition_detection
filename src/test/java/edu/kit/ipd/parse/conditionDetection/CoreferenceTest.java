@@ -10,13 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.token.Token;
+import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
-import edu.kit.ipd.parse.luna.graph.ParseArcType;
 import edu.kit.ipd.parse.luna.graph.ParseNode;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class CoreferenceTest {
+	private static final String COREF_ARC_TYPE = "coref";
 	ConditionDetector dt;
 	Token[] actual;
 	ShallowNLP snlp;
@@ -56,6 +57,7 @@ public class CoreferenceTest {
 		// Add synthetic coref-arc
 		INode corefBegin = null;
 		INode corefEnd = null;
+		IArcType arcType;
 		for (INode node : graph.getNodes()) {
 			if (node.getAttributeValue("value").toString().equalsIgnoreCase("plates")) {
 				corefBegin = node;
@@ -63,7 +65,12 @@ public class CoreferenceTest {
 				corefEnd = node;
 			}
 		}
-		graph.createArc(corefEnd, corefBegin, new ParseArcType("coref"));
+		if (graph.hasArcType(COREF_ARC_TYPE)) {
+			arcType = graph.getArcType(COREF_ARC_TYPE);
+		} else {
+			arcType = graph.createArcType(COREF_ARC_TYPE);
+		}
+		graph.createArc(corefEnd, corefBegin, arcType);
 
 		dt.exec();
 	}
