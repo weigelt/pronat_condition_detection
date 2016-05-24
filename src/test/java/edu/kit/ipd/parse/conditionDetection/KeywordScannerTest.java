@@ -9,23 +9,30 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.parse.luna.graph.IGraph;
+import edu.kit.ipd.parse.luna.graph.INode;
+import edu.kit.ipd.parse.luna.graph.INodeType;
 import edu.kit.ipd.parse.luna.graph.ParseGraph;
 import edu.kit.ipd.parse.luna.graph.ParseNode;
-import edu.kit.ipd.parse.luna.graph.ParseNodeType;
 
 public class KeywordScannerTest {
+	private static final String TOKEN_NODE_TYPE = "token";
 	KeywordScanner scanner;
 	Synonyms syn;
-	ParseGraph graph;
-	ParseNodeType wordType;
-	ParseNode[] nodes;
+	IGraph graph;
+	INodeType wordType;
+	INode[] nodes;
 
 	@Before
 	public void setUpGraph() throws Exception {
 		syn = new Synonyms();
 		syn.importSynonyms();
 		graph = new ParseGraph();
-		wordType = new ParseNodeType("token");
+		if (graph.hasNodeType(TOKEN_NODE_TYPE)) {
+			wordType = graph.getNodeType(TOKEN_NODE_TYPE);
+		} else {
+			wordType = graph.createNodeType(TOKEN_NODE_TYPE);
+		}
 		wordType.addAttributeToType("String", "value");
 		wordType.addAttributeToType("String", "commandType");
 	}
@@ -63,21 +70,9 @@ public class KeywordScannerTest {
 	private void fillNodes(int input, String[] s) {
 		nodes = new ParseNode[input];
 		for (int i = 0; i < input; i++) {
-			ParseNode node = graph.createNode(wordType);
+			INode node = graph.createNode(wordType);
 			nodes[i] = node;
 			node.setAttributeValue("value", s[i]);
-		}
-	}
-
-	private void fillNodes2(int input, String[] s, int ifStmtLength) {
-		nodes = new ParseNode[input];
-		for (int i = 0; i < input; i++) {
-			ParseNode node = graph.createNode(wordType);
-			node.setAttributeValue("value", s[i]);
-			nodes[i] = node;
-			if (i < ifStmtLength) {
-				nodes[i].setAttributeValue("commandType", CommandType.IF_STATEMENT);
-			}
 		}
 	}
 }
