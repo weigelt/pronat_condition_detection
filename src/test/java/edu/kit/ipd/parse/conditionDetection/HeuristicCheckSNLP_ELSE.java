@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -53,7 +54,10 @@ public class HeuristicCheckSNLP_ELSE {
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 7; i < nodes.length; i++) {
-			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
+			System.out.println("word: " + nodes[i].getAttributeValue("value") + " " + "command: "
+					+ nodes[i].getAttributeValue("commandType"));
+			Assert.assertEquals(CommandType.INDEPENDENT_STATEMENT, nodes[i].getAttributeValue("commandType"));
+			//assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
 		}
 	}
 

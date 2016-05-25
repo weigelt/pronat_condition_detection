@@ -1,11 +1,10 @@
 package edu.kit.ipd.parse.conditionDetection;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +47,10 @@ public class CoreferenceTest {
 		dt.exec();
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 7; i < nodes.length; i++) {
-			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
+			System.out.println("word: " + nodes[i].getAttributeValue("value") + " " + "command: "
+					+ nodes[i].getAttributeValue("commandType"));
+			Assert.assertEquals(CommandType.INDEPENDENT_STATEMENT, nodes[i].getAttributeValue("commandType"));
+			//assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
 		}
 	}
 
