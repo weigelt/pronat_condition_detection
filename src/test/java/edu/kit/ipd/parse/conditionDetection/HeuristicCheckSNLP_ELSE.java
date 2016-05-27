@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.token.Token;
@@ -44,6 +45,7 @@ public class HeuristicCheckSNLP_ELSE {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void indpStatement() {
 		String input = "If the dog barks he is angry else he wags his tail";

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.token.Token;
@@ -75,6 +76,7 @@ public class HeuristicCheckSNLP_IF {
 		assertTrue(nodes[4].getAttributeValue("commandType") == null);
 	}
 
+	@Ignore
 	@Test
 	public void adjectivePhrase() {
 		String input = "If the black dog barks loudly go";

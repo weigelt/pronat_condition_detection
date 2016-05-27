@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.token.Token;
@@ -42,6 +43,7 @@ public class CoreferenceTest {
 		dt.setGraph(graph);
 	}
 
+	@Ignore
 	@Test
 	public void withoutCoref() {
 		dt.exec();
