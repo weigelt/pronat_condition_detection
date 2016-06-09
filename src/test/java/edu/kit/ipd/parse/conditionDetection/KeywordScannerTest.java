@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,11 +35,6 @@ public class KeywordScannerTest {
 		}
 		wordType.addAttributeToType("String", "value");
 		wordType.addAttributeToType("String", "commandType");
-	}
-
-	@After
-	public void afterTest() {
-		System.out.println(" ");
 	}
 
 	@Ignore("Test has no assertion - so we can skip it")
