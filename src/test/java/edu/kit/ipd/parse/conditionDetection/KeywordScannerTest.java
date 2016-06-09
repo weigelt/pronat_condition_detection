@@ -66,7 +66,7 @@ public class KeywordScannerTest {
 		fillNodes(words.length, words);
 		List<Keyword> list = KeywordScanner.searchIfKeywords(syn, nodes);
 
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 	}
 
 	private void fillNodes(int input, String[] s) {
