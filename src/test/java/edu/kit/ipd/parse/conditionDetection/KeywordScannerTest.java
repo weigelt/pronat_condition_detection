@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.graph.IGraph;
@@ -42,6 +43,7 @@ public class KeywordScannerTest {
 		System.out.println(" ");
 	}
 
+	@Ignore("Test has no assertion - so we can skip it")
 	@Test
 	public void ifKeywordScan_2wordSynonym() {
 		String[] words = { "in", "case", "you" };
