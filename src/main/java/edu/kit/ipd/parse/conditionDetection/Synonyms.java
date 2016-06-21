@@ -19,6 +19,9 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  *
  */
 public class Synonyms {
+	private static final String PROPS_ELSE_SYN = "ELSE_SYN";
+	private static final String PROPS_THEN_SYN = "THEN_SYN";
+	private static final String PROPS_IF_SYN = "IF_SYN";
 	private static final Logger logger = LoggerFactory.getLogger(Synonyms.class);
 	private List<List<String>> ifSynonymList;
 	private List<List<String>> thenSynonymList;
@@ -32,9 +35,9 @@ public class Synonyms {
 
 	public void importSynonyms() {
 		Properties props = ConfigManager.getConfiguration(Synonyms.class);
-		String ifSyn = props.getProperty("IF_SYN");
-		String thenSyn = props.getProperty("THEN_SYN");
-		String elseSyn = props.getProperty("ELSE_SYN");
+		String ifSyn = props.getProperty(PROPS_IF_SYN);
+		String thenSyn = props.getProperty(PROPS_THEN_SYN);
+		String elseSyn = props.getProperty(PROPS_ELSE_SYN);
 
 		splitSynonymInput(ifSyn, ifSynonymList);
 		splitSynonymInput(thenSyn, thenSynonymList);
