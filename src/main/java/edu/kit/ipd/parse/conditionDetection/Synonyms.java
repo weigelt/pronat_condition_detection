@@ -22,13 +22,21 @@ public class Synonyms {
 	private static final String DEFAULT_KEYWORD_ELSE = "else";
 	private static final String DEFAULT_KEYWORD_THEN = "then";
 	private static final String DEFAULT_KEYWORD_IF = "if";
+
+	/** Key for loading else synonyms */
 	static final String PROPS_ELSE_SYN = "ELSE_SYN";
+	/** Key for loading then synonyms */
 	static final String PROPS_THEN_SYN = "THEN_SYN";
+	/** Key for loading if synonyms */
 	static final String PROPS_IF_SYN = "IF_SYN";
-	private static final Logger logger = LoggerFactory.getLogger(Synonyms.class);
+	/** Delimiter for key words and key phrases in properties file */
+	private static final String PROPS_STRING = ",";
+
 	private List<List<String>> ifSynonymList;
 	private List<List<String>> thenSynonymList;
 	private List<List<String>> elseSynonymList;
+
+	private static final Logger logger = LoggerFactory.getLogger(Synonyms.class);
 
 	public Synonyms() {
 		ifSynonymList = new ArrayList<List<String>>();
@@ -37,6 +45,8 @@ public class Synonyms {
 	}
 
 	public void importSynonyms() {
+		logger.trace("Loading synonyms for condition detection from configuration");
+
 		Properties props = ConfigManager.getConfiguration(Synonyms.class);
 		String ifSyn = props.getProperty(PROPS_IF_SYN, DEFAULT_KEYWORD_IF).trim();
 		ifSyn = ifSyn.isEmpty() ? DEFAULT_KEYWORD_IF : ifSyn;
@@ -56,7 +66,7 @@ public class Synonyms {
 	private List<List<String>> splitSynonymInput(String synonymInputString, List<List<String>> list) {
 		List<String> statementSynonyms = new ArrayList<String>();
 		if (synonymInputString != null && !synonymInputString.isEmpty()) {
-			statementSynonyms = Arrays.asList(synonymInputString.split(";"));
+			statementSynonyms = Arrays.asList(synonymInputString.split(PROPS_STRING));
 		}
 
 		for (String synonym : statementSynonyms) {
@@ -79,5 +89,4 @@ public class Synonyms {
 	public List<List<String>> getElseSynonyms() {
 		return elseSynonymList;
 	}
-
 }
