@@ -54,6 +54,7 @@ public class KeywordScannerTest {
 		assertTrue(list.isEmpty());
 	}
 
+	// Fixme - see #4
 	@Test
 	public void ifKeywordScan_multipleKeywords() {
 		String[] words = { "if", "you", "go", "in", "case", "the", "tree" };

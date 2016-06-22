@@ -31,6 +31,8 @@ public class KeywordScanner {
 
 	}
 
+	// TODO Why are there three scanner methods  shouldn't they be all the same (with the list of synonyms as an additional parameter?
+	// See #3
 	public static List<Keyword> searchIfKeywords(Synonyms synonyms, INode[] nodes) {
 		List<KeyPhrase> ifSynonymList = synonyms.getIfSynonyms();
 		List<Keyword> ifKeywordsInText = new ArrayList<Keyword>();
