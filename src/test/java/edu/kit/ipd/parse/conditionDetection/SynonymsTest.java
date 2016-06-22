@@ -13,6 +13,9 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  */
 public class SynonymsTest {
 
+	/**
+	 * Make sure that default values are being set properly
+	 */
 	@Test
 	public void testDefaultValues() {
 		Properties synConfig = ConfigManager.getConfiguration(Synonyms.class);
