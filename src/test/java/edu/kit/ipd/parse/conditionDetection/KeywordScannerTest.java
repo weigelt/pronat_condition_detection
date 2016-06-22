@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.graph.IGraph;
@@ -37,11 +37,7 @@ public class KeywordScannerTest {
 		wordType.addAttributeToType("String", "commandType");
 	}
 
-	@After
-	public void afterTest() {
-		System.out.println(" ");
-	}
-
+	@Ignore("Test has no assertion - so we can skip it")
 	@Test
 	public void ifKeywordScan_2wordSynonym() {
 		String[] words = { "in", "case", "you" };
@@ -64,7 +60,7 @@ public class KeywordScannerTest {
 		fillNodes(words.length, words);
 		List<Keyword> list = KeywordScanner.searchIfKeywords(syn, nodes);
 
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 	}
 
 	private void fillNodes(int input, String[] s) {
