@@ -19,9 +19,12 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  *
  */
 public class Synonyms {
-	private static final String PROPS_ELSE_SYN = "ELSE_SYN";
-	private static final String PROPS_THEN_SYN = "THEN_SYN";
-	private static final String PROPS_IF_SYN = "IF_SYN";
+	private static final String DEFAULT_KEYWORD_ELSE = "else";
+	private static final String DEFAULT_KEYWORD_THEN = "then";
+	private static final String DEFAULT_KEYWORD_IF = "if";
+	static final String PROPS_ELSE_SYN = "ELSE_SYN";
+	static final String PROPS_THEN_SYN = "THEN_SYN";
+	static final String PROPS_IF_SYN = "IF_SYN";
 	private static final Logger logger = LoggerFactory.getLogger(Synonyms.class);
 	private List<List<String>> ifSynonymList;
 	private List<List<String>> thenSynonymList;
@@ -35,35 +38,19 @@ public class Synonyms {
 
 	public void importSynonyms() {
 		Properties props = ConfigManager.getConfiguration(Synonyms.class);
-		String ifSyn = props.getProperty(PROPS_IF_SYN);
-		String thenSyn = props.getProperty(PROPS_THEN_SYN);
-		String elseSyn = props.getProperty(PROPS_ELSE_SYN);
+		String ifSyn = props.getProperty(PROPS_IF_SYN, DEFAULT_KEYWORD_IF).trim();
+		ifSyn = ifSyn.isEmpty() ? DEFAULT_KEYWORD_IF : ifSyn;
+
+		String thenSyn = props.getProperty(PROPS_THEN_SYN, DEFAULT_KEYWORD_THEN).trim();
+		thenSyn = thenSyn.isEmpty() ? DEFAULT_KEYWORD_THEN : thenSyn;
+
+		String elseSyn = props.getProperty(PROPS_ELSE_SYN, DEFAULT_KEYWORD_ELSE).trim();
+		elseSyn = elseSyn.isEmpty() ? DEFAULT_KEYWORD_ELSE : elseSyn;
 
 		splitSynonymInput(ifSyn, ifSynonymList);
 		splitSynonymInput(thenSyn, thenSynonymList);
 		splitSynonymInput(elseSyn, elseSynonymList);
 		SyntaxHelper.setAdverbBlacklist(elseSynonymList);
-
-		if (ifSynonymList.isEmpty()) {
-			List<String> keywordIf = new ArrayList<String>();
-			keywordIf.add("if");
-			ifSynonymList.add(keywordIf);
-			logger.debug("No if-synonym found. Added default keyword 'if'.");
-		}
-
-		if (thenSynonymList.isEmpty()) {
-			List<String> keywordThen = new ArrayList<String>();
-			keywordThen.add("then");
-			thenSynonymList.add(keywordThen);
-			logger.debug("No then-synonym found. Added default keyword 'then'.");
-		}
-
-		if (elseSynonymList.isEmpty()) {
-			List<String> keywordElse = new ArrayList<String>();
-			keywordElse.add("else");
-			elseSynonymList.add(keywordElse);
-			logger.debug("No else-synonym found. Added default keyword 'else'.");
-		}
 	}
 
 	private List<List<String>> splitSynonymInput(String synonymInputString, List<List<String>> list) {
