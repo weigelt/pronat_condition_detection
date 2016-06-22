@@ -17,10 +17,14 @@ import edu.kit.ipd.parse.luna.graph.INode;
  * @author Vanessa Steurer
  */
 public class KeywordScanner {
+	private static final String COMMAND_TYPE = "commandType";
+	private static final String POS_CC = "CC";
+	private static final String POS = "pos";
+	private static final String CHUNK_IOB = "chunkIOB";
 	private static final Logger logger = LoggerFactory.getLogger(KeywordScanner.class);
-	private static HashSet<String> auxiliaryVerbList = new HashSet<String>(
+	private static final HashSet<String> auxiliaryVerbList = new HashSet<String>(
 			Arrays.asList(new String[] { "am", "is", "are", "was", "were", "has", "have", "had" }));
-	private static HashSet<String> elseKeywordBlacklist = new HashSet<String>(
+	private static final HashSet<String> elseKeywordBlacklist = new HashSet<String>(
 			Arrays.asList(new String[] { "somebody", "somewhere", "someone", "anybody", "anywhere", "anyone" }));
 
 	private KeywordScanner() {
@@ -80,7 +84,7 @@ public class KeywordScanner {
 		if (ifKeywordsInText.isEmpty()) {
 			logger.debug("Couldn't find condition-clauses in input.");
 		} else {
-			logger.debug("Found if-keywords " + toString(ifKeywordsInText) + "\n");
+			logger.debug("Found if-keywords {}", Arrays.toString(ifKeywordsInText.toArray(new Keyword[] {})));
 		}
 
 		return ifKeywordsInText;
@@ -100,17 +104,17 @@ public class KeywordScanner {
 			} else {
 				nextStmt = nodes.length;
 			}
-			logger.info("Search for then-keywords in detected if-clause number " + (keywordIndex + 1) + ".");
+			logger.info("Search for then-keywords in detected if-clause number {}", keywordIndex + 1);
 
 			currStmt = skipStatement(nodes, currStmt, CommandType.IF_STATEMENT); // Skip if-statement	
-			logger.debug("Search then-keywords between position " + currStmt + " and " + (nextStmt - 1) + ".");
+			logger.debug("Search then-keywords between position {} and {}", currStmt, (nextStmt - 1));
 
 			int firstDetectedVerb = currStmt;
 			boolean foundVerb = false;
 			for (int i = currStmt; i < nextStmt; i++) { // Look for first verb
-				if (nodes[i].getAttributeValue("chunkIOB").toString().toUpperCase().contains("-VP")
-						&& !nodes[i - 1].getAttributeValue("chunkIOB").toString().toUpperCase().contains("-PP")
-						&& !nodes[i - 1].getAttributeValue("pos").toString().equalsIgnoreCase("CC")
+				if (nodes[i].getAttributeValue(CHUNK_IOB).toString().toUpperCase().contains("-VP")
+						&& !nodes[i - 1].getAttributeValue(CHUNK_IOB).toString().toUpperCase().contains("-PP")
+						&& !nodes[i - 1].getAttributeValue(POS).toString().equalsIgnoreCase(POS_CC)
 						&& !auxiliaryVerbList.contains(nodes[i - 1].getAttributeValue("value").toString().toLowerCase())) {
 					firstDetectedVerb = i;
 					foundVerb = true;
@@ -118,7 +122,7 @@ public class KeywordScanner {
 				}
 			}
 
-			if (nodes[currStmt].getAttributeValue("commandType") == null) { // Search for then-keywords in input
+			if (nodes[currStmt].getAttributeValue(COMMAND_TYPE) == null) { // Search for then-keywords in input
 				for (int i = currStmt; i < firstDetectedVerb; i++) { // FIRST: Search between end of if-stmt to next verb	
 					if (isKeyword) {
 						break;
@@ -143,15 +147,15 @@ public class KeywordScanner {
 							hint.setInvalid();
 						}
 						thenKeywordsInText.add(hint);
-						logger.debug("No then-Keyword found in current if-Statement.\n");
+						logger.debug("No then-Keyword found in current if-Statement.");
 					}
 				}
 
 				// Then-stmt beginns with verb (more than 3 consecutive verbs found in if-heuristic)
-			} else if (nodes[currStmt].getAttributeValue("commandType").equals(CommandType.THEN_STATEMENT)) {
+			} else if (nodes[currStmt].getAttributeValue(COMMAND_TYPE).equals(CommandType.THEN_STATEMENT)) {
 				Keyword hint = new Keyword(CommandType.THEN_STATEMENT, "DUMMY_KEYWORD", currStmt, currStmt);
 				thenKeywordsInText.add(hint);
-				logger.debug("No then-Keyword found in current if-Statement.\n");
+				logger.debug("No then-Keyword found in current if-Statement.");
 			}
 		}
 
@@ -172,12 +176,12 @@ public class KeywordScanner {
 			} else {
 				nextStmt = nodes.length;
 			}
-			logger.info("Search for else-keywords in detected if-clause number " + (keywordIndex + 1) + ".");
+			logger.info("Search for else-keywords in detected if-clause number {}", keywordIndex + 1);
 
 			currStmt = skipStatement(nodes, currStmt, CommandType.IF_STATEMENT); // Skip IF-Statement
 			currStmt = skipStatement(nodes, currStmt, CommandType.THEN_STATEMENT); // Skip THEN-Statement (in case one exists)
 			currStmt = skipStatement(nodes, currStmt, CommandType.INDEPENDENT_STATEMENT); // Skip INDP-Statement (in case one exists)
-			logger.debug("Search else-keywords between position " + currStmt + " and " + nextStmt + ".");
+			logger.debug("Search else-keywords between position {} and {}", currStmt, nextStmt);
 
 			for (int i = currStmt; i < nextStmt; i++) { // Search for else-keywords in input
 				if (isKeyword) {
@@ -190,7 +194,7 @@ public class KeywordScanner {
 			if (!isKeyword) {
 				Keyword hint = new Keyword(null, "DUMMY_KEYWORD", currStmt, currStmt); // no else-stmt found
 				elseKeywordsInText.add(hint);
-				logger.debug("No else-keyword found in current if-Statement -> no else-Statement.\n");
+				logger.debug("No else-keyword found in current if-Statement -> no else-Statement.");
 			}
 		}
 
@@ -202,8 +206,8 @@ public class KeywordScanner {
 	}
 
 	private static int skipStatement(INode[] nodes, int currStmt, CommandType commandType) { // first word after statement
-		while (nodes[currStmt].getAttributeValue("commandType") != null
-				&& nodes[currStmt].getAttributeValue("commandType").equals(commandType)) {
+		while (nodes[currStmt].getAttributeValue(COMMAND_TYPE) != null
+				&& nodes[currStmt].getAttributeValue(COMMAND_TYPE).equals(commandType)) {
 			currStmt++;
 			if (currStmt >= nodes.length) {
 				return currStmt - 1;
@@ -235,7 +239,7 @@ public class KeywordScanner {
 					if (counter == thenSynonymList.get(j).size()) {
 						Keyword hint = new Keyword(cmdType, thenSynonymList.get(j).toString(), i, i + k);
 						keywordsInText.add(hint);
-						logger.debug("Found keyword: " + thenSynonymList.get(j).toString() + "\n");
+						logger.debug("Found key phrase: {}", thenSynonymList.get(j).toString());
 						return true;
 					}
 
@@ -248,7 +252,7 @@ public class KeywordScanner {
 		return false;
 	}
 
-	private static String toString(List<Keyword> keywords) {
+	private static String tooString(List<Keyword> keywords) {
 		String keywordsFound = "";
 		for (Keyword keyword : keywords) {
 			keywordsFound = keywordsFound.concat(keyword.getKeyword() + ",");

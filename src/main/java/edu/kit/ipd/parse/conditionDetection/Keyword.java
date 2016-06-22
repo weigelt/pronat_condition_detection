@@ -67,4 +67,8 @@ public class Keyword {
 		this.invalid = true;
 	}
 
+	@Override
+	public String toString() {
+		return keyword + " (" + keywordBegin + ":" + keywordEnd + ")";
+	}
 }
