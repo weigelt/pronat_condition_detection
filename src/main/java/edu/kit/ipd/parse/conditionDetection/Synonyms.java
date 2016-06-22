@@ -32,16 +32,16 @@ public class Synonyms {
 	/** Delimiter for key words and key phrases in properties file */
 	private static final String PROPS_STRING = ",";
 
-	private List<List<String>> ifSynonymList;
-	private List<List<String>> thenSynonymList;
-	private List<List<String>> elseSynonymList;
+	private List<KeyPhrase> ifSynonymList;
+	private List<KeyPhrase> thenSynonymList;
+	private List<KeyPhrase> elseSynonymList;
 
 	private static final Logger logger = LoggerFactory.getLogger(Synonyms.class);
 
 	public Synonyms() {
-		ifSynonymList = new ArrayList<List<String>>();
-		thenSynonymList = new ArrayList<List<String>>();
-		elseSynonymList = new ArrayList<List<String>>();
+		ifSynonymList = new ArrayList<KeyPhrase>();
+		thenSynonymList = new ArrayList<KeyPhrase>();
+		elseSynonymList = new ArrayList<KeyPhrase>();
 	}
 
 	public void importSynonyms() {
@@ -63,30 +63,32 @@ public class Synonyms {
 		SyntaxHelper.setAdverbBlacklist(elseSynonymList);
 	}
 
-	private List<List<String>> splitSynonymInput(String synonymInputString, List<List<String>> list) {
+	private List<KeyPhrase> splitSynonymInput(String synonymInputString, List<KeyPhrase> list) {
 		List<String> statementSynonyms = new ArrayList<String>();
 		if (synonymInputString != null && !synonymInputString.isEmpty()) {
 			statementSynonyms = Arrays.asList(synonymInputString.split(PROPS_STRING));
 		}
 
 		for (String synonym : statementSynonyms) {
-			List<String> currStatementSynonym = new ArrayList<String>();
-			currStatementSynonym = Arrays.asList(synonym.split(" "));
+			KeyPhrase currStatementSynonym = new KeyPhrase();
+			for (String s : synonym.split(" ")) {
+				currStatementSynonym.add(s);
+			}
 			list.add(currStatementSynonym);
 		}
 
 		return list;
 	}
 
-	public List<List<String>> getIfSynonyms() {
+	public List<KeyPhrase> getIfSynonyms() {
 		return ifSynonymList;
 	}
 
-	public List<List<String>> getThenSynonyms() {
+	public List<KeyPhrase> getThenSynonyms() {
 		return thenSynonymList;
 	}
 
-	public List<List<String>> getElseSynonyms() {
+	public List<KeyPhrase> getElseSynonyms() {
 		return elseSynonymList;
 	}
 }

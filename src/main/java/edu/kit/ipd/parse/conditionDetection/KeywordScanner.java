@@ -28,7 +28,7 @@ public class KeywordScanner {
 	}
 
 	public static List<Keyword> searchIfKeywords(Synonyms synonyms, INode[] nodes) {
-		List<List<String>> ifSynonymList = synonyms.getIfSynonyms();
+		List<KeyPhrase> ifSynonymList = synonyms.getIfSynonyms();
 		List<Keyword> ifKeywordsInText = new ArrayList<Keyword>();
 
 		for (int i = 0; i < nodes.length; i++) { // Search for if-keywords in input
@@ -87,7 +87,7 @@ public class KeywordScanner {
 	}
 
 	public static List<Keyword> searchThenKeywords(Synonyms synonyms, INode[] nodes, List<Keyword> ifHints) {
-		List<List<String>> thenSynonymList = synonyms.getThenSynonyms();
+		List<KeyPhrase> thenSynonymList = synonyms.getThenSynonyms();
 		List<Keyword> thenKeywordsInText = new ArrayList<Keyword>();
 
 		for (Keyword keyword : ifHints) {
@@ -159,7 +159,7 @@ public class KeywordScanner {
 	}
 
 	public static List<Keyword> searchElseKeywords(Synonyms synonyms, INode[] nodes, List<Keyword> ifHints) {
-		List<List<String>> elseSynonymList = synonyms.getElseSynonyms();
+		List<KeyPhrase> elseSynonymList = synonyms.getElseSynonyms();
 		List<Keyword> elseKeywordsInText = new ArrayList<Keyword>();
 
 		for (Keyword keyword : ifHints) {
@@ -213,14 +213,14 @@ public class KeywordScanner {
 		return currStmt;
 	}
 
-	private static boolean compareInputWithSyn(INode[] nodes, List<Keyword> keywordsInText, List<List<String>> synonymList,
+	private static boolean compareInputWithSyn(INode[] nodes, List<Keyword> keywordsInText, List<KeyPhrase> thenSynonymList,
 			CommandType cmdType, boolean isKeyword, int i) {
-		for (int j = 0; j < synonymList.size(); j++) { // Compare words with existing synonyms
+		for (int j = 0; j < thenSynonymList.size(); j++) { // Compare words with existing synonyms
 
 			int counter = 0;
-			for (int k = 0; k < synonymList.get(j).size(); k++) { // Consider synonyms consisting of more than one word
+			for (int k = 0; k < thenSynonymList.get(j).size(); k++) { // Consider synonyms consisting of more than one word
 				if (hasNext(i, nodes.length)) {
-					if (synonymList.get(j).get(0).equalsIgnoreCase("else")
+					if (thenSynonymList.get(j).get(0).equalsIgnoreCase("else")
 							&& nodes[i].getAttributeValue("value").toString().equalsIgnoreCase("else")
 							&& (nodes[i + 1].getAttributeValue("value").toString().equalsIgnoreCase("if")
 									|| elseKeywordBlacklist.contains(nodes[i - 1].getAttributeValue("value").toString().toLowerCase()))) {
@@ -230,12 +230,12 @@ public class KeywordScanner {
 					}
 				}
 
-				if (synonymList.get(j).get(k).equalsIgnoreCase(nodes[i + k].getAttributeValue("value").toString())) {
+				if (thenSynonymList.get(j).get(k).equalsIgnoreCase(nodes[i + k].getAttributeValue("value").toString())) {
 					counter++;
-					if (counter == synonymList.get(j).size()) {
-						Keyword hint = new Keyword(cmdType, synonymList.get(j).toString(), i, i + k);
+					if (counter == thenSynonymList.get(j).size()) {
+						Keyword hint = new Keyword(cmdType, thenSynonymList.get(j).toString(), i, i + k);
 						keywordsInText.add(hint);
-						logger.debug("Found keyword: " + synonymList.get(j).toString() + "\n");
+						logger.debug("Found keyword: " + thenSynonymList.get(j).toString() + "\n");
 						return true;
 					}
 

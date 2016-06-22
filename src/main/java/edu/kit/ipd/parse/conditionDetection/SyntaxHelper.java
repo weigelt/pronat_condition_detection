@@ -91,9 +91,11 @@ public class SyntaxHelper {
 		return nodes[i].getAttributeValue("chunkIOB").toString().toUpperCase().contains("PRT");
 	}
 
-	public static void setAdverbBlacklist(List<List<String>> elseSynonyms) {
-		for (int i = 0; i < elseSynonyms.size(); i++) {
-			adverbBlacklist.add(elseSynonyms.get(i).get(0));
+	public static void setAdverbBlacklist(List<KeyPhrase> keyPhrases) {
+		for (KeyPhrase keyPhrase : keyPhrases) {
+			// TODO @vanessa: Warum ist das so? Warum nicht "not" bei "if not"
+			// Warum ist die adverbBlacklist keine List<List<String>> bzw. List<KeyPhrase>?
+			adverbBlacklist.add(keyPhrase.get(0));
 		}
 	}
 }
