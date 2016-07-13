@@ -1,8 +1,6 @@
 package edu.kit.ipd.parse.conditionDetection;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -467,6 +465,7 @@ public class StatementExtractor {
 			}
 			int ifEnd = condition.getIfStmt().getEnd();
 			createStmtArcs(graph, nodes, arcType, ifBegin, ifEnd, "if"); // Add arcs between IF-Stmts
+			setConditionNumber(condition, i);
 
 			if (condition.hasThenStmt()) { // If THEN exists, add arcs
 				int thenBegin = condition.getThenStmt().getBegin();
@@ -520,46 +519,34 @@ public class StatementExtractor {
 				createStmtArcs(graph, nodes, arcType, condition.getConditionEnd() + 1, nodes.length - 1, "indp");
 			}
 		}
-
-		setConditionNumbers(spottedConditions);
 		logger.debug("Set commandtype of arcs and nodes to the commandtype of the spotted statement.");
 	}
 
 	/**
-	 * Set conditionNumber for all spotted conditions
+	 * Sets conditionNumber for the specified condition
 	 * 
 	 * @author Tobias Hey
 	 * 
-	 * @param spottedConditions
-	 *            of the input text
+	 * @param condition
+	 *            The condition to set the number for
+	 * @param conditionNumber
+	 *            The number to set
 	 */
-	private static void setConditionNumbers(List<ConditionContainer> spottedConditions) {
-		Collections.sort(spottedConditions, new Comparator<ConditionContainer>() {
-
-			@Override
-			public int compare(ConditionContainer arg0, ConditionContainer arg1) {
-				return Integer.compare(arg0.getConditionBegin(), arg1.getConditionBegin());
-			}
-		});
-		int conditionNumber = 0;
-		for (ConditionContainer conditionContainer : spottedConditions) {
-
-			for (INode node : conditionContainer.getIfStmt().getNodeList()) {
+	private static void setConditionNumber(ConditionContainer condition, int conditionNumber) {
+		for (INode node : condition.getIfStmt().getNodeList()) {
+			node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
+		}
+		if (condition.hasThenStmt()) {
+			for (INode node : condition.getThenStmt().getNodeList()) {
 				node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
 			}
-			if (conditionContainer.hasThenStmt()) {
-				for (INode node : conditionContainer.getThenStmt().getNodeList()) {
-					node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
-				}
-			}
-			if (conditionContainer.hasElseStmt()) {
-				for (INode node : conditionContainer.getElseStmt().getNodeList()) {
-					node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
-				}
-			}
-
-			conditionNumber++;
 		}
+		if (condition.hasElseStmt()) {
+			for (INode node : condition.getElseStmt().getNodeList()) {
+				node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
+			}
+		}
+
 	}
 
 	private static void createStmtArcs(IGraph graph, INode[] nodes, IArcType arcType, int beginStmt, int endStmt, String stmt) {

@@ -92,7 +92,7 @@ public class ConditionDetectorTest {
 	 * @author Tobias Hey
 	 */
 	@Test
-	public void statementNumberTest() {
+	public void conditionNumberTest() {
 		input = "Go to the fridge open the fridge if there are fresh oranges take the oranges and the water if there are no fresh oranges take the orange juice and the water";
 		try {
 			actual = snlp.parse(input, null);
