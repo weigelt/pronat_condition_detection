@@ -1,6 +1,8 @@
 package edu.kit.ipd.parse.conditionDetection;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -70,8 +72,8 @@ public class StatementExtractor {
 					currStmtPos++;
 				}
 				if (currStmtPos > endOfIfStmt) {
-					logger.debug("Found section with missing commandtype. Set INDP-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1)
-							+ ".");
+					logger.debug(
+							"Found section with missing commandtype. Set INDP-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1) + ".");
 				}
 
 				// IF + THEN
@@ -82,8 +84,8 @@ public class StatementExtractor {
 					currStmtPos++;
 				}
 				if (currStmtPos > endOfIfStmt) {
-					logger.debug("Found section with missing commandtype. Set IF-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1)
-							+ ".");
+					logger.debug(
+							"Found section with missing commandtype. Set IF-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1) + ".");
 				}
 			}
 		}
@@ -325,9 +327,8 @@ public class StatementExtractor {
 			for (IArc arc : nodes[j].getOutgoingArcs()) {
 				if (arc.getType().getName().equalsIgnoreCase("coref")) { // Coref-arc to another part of the THEN- or ELSE-stmt
 					INode target = arc.getTargetNode();
-					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target)
-							|| (spottedConditions.get(i).hasElseStmt() && spottedConditions.get(i).getElseStmt().getNodeList()
-									.contains(target))) {
+					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
+							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
 						corefSearchIndex = j;
 						foundCoref = true;
 						logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
@@ -519,7 +520,46 @@ public class StatementExtractor {
 				createStmtArcs(graph, nodes, arcType, condition.getConditionEnd() + 1, nodes.length - 1, "indp");
 			}
 		}
+		Collections.sort(spottedConditions, new Comparator<ConditionContainer>() {
+
+			@Override
+			public int compare(ConditionContainer arg0, ConditionContainer arg1) {
+				return Integer.compare(arg0.getConditionBegin(), arg1.getConditionBegin());
+			}
+		});
+
+		setStatementNumbers(spottedConditions);
 		logger.debug("Set commandtype of arcs and nodes to the commandtype of the spotted statement.");
+	}
+
+	/**
+	 * Set statementNumber for all spotted conditions
+	 * 
+	 * @author Tobias Hey
+	 * 
+	 * @param spottedConditions
+	 *            of the input text
+	 */
+	private static void setStatementNumbers(List<ConditionContainer> spottedConditions) {
+		int statementNumber = 0;
+		for (ConditionContainer conditionContainer : spottedConditions) {
+
+			for (INode node : conditionContainer.getIfStmt().getNodeList()) {
+				node.setAttributeValue(ConditionDetector.STATEMENT_NUMBER, statementNumber);
+			}
+			if (conditionContainer.hasThenStmt()) {
+				for (INode node : conditionContainer.getThenStmt().getNodeList()) {
+					node.setAttributeValue(ConditionDetector.STATEMENT_NUMBER, statementNumber);
+				}
+			}
+			if (conditionContainer.hasElseStmt()) {
+				for (INode node : conditionContainer.getElseStmt().getNodeList()) {
+					node.setAttributeValue(ConditionDetector.STATEMENT_NUMBER, statementNumber);
+				}
+			}
+
+			statementNumber++;
+		}
 	}
 
 	private static void createStmtArcs(IGraph graph, INode[] nodes, IArcType arcType, int beginStmt, int endStmt, String stmt) {
