@@ -87,7 +87,7 @@ public class ConditionDetectorTest {
 	}
 
 	/**
-	 * Tests whether the statementNumbers are set correctly.
+	 * Tests whether the conditionNumbers are set correctly.
 	 * 
 	 * @author Tobias Hey
 	 */
@@ -116,7 +116,7 @@ public class ConditionDetectorTest {
 		}
 		int[] actual = new int[tokens.size()];
 		for (INode node : tokens) {
-			actual[(int) node.getAttributeValue("position")] = (int) node.getAttributeValue(ConditionDetector.STATEMENT_NUMBER);
+			actual[(int) node.getAttributeValue("position")] = (int) node.getAttributeValue(ConditionDetector.CONDITION_NUMBER);
 		}
 		Assert.assertArrayEquals(expected, actual);
 	}

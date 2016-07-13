@@ -520,6 +520,20 @@ public class StatementExtractor {
 				createStmtArcs(graph, nodes, arcType, condition.getConditionEnd() + 1, nodes.length - 1, "indp");
 			}
 		}
+
+		setConditionNumbers(spottedConditions);
+		logger.debug("Set commandtype of arcs and nodes to the commandtype of the spotted statement.");
+	}
+
+	/**
+	 * Set conditionNumber for all spotted conditions
+	 * 
+	 * @author Tobias Hey
+	 * 
+	 * @param spottedConditions
+	 *            of the input text
+	 */
+	private static void setConditionNumbers(List<ConditionContainer> spottedConditions) {
 		Collections.sort(spottedConditions, new Comparator<ConditionContainer>() {
 
 			@Override
@@ -527,38 +541,24 @@ public class StatementExtractor {
 				return Integer.compare(arg0.getConditionBegin(), arg1.getConditionBegin());
 			}
 		});
-
-		setStatementNumbers(spottedConditions);
-		logger.debug("Set commandtype of arcs and nodes to the commandtype of the spotted statement.");
-	}
-
-	/**
-	 * Set statementNumber for all spotted conditions
-	 * 
-	 * @author Tobias Hey
-	 * 
-	 * @param spottedConditions
-	 *            of the input text
-	 */
-	private static void setStatementNumbers(List<ConditionContainer> spottedConditions) {
-		int statementNumber = 0;
+		int conditionNumber = 0;
 		for (ConditionContainer conditionContainer : spottedConditions) {
 
 			for (INode node : conditionContainer.getIfStmt().getNodeList()) {
-				node.setAttributeValue(ConditionDetector.STATEMENT_NUMBER, statementNumber);
+				node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
 			}
 			if (conditionContainer.hasThenStmt()) {
 				for (INode node : conditionContainer.getThenStmt().getNodeList()) {
-					node.setAttributeValue(ConditionDetector.STATEMENT_NUMBER, statementNumber);
+					node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
 				}
 			}
 			if (conditionContainer.hasElseStmt()) {
 				for (INode node : conditionContainer.getElseStmt().getNodeList()) {
-					node.setAttributeValue(ConditionDetector.STATEMENT_NUMBER, statementNumber);
+					node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
 				}
 			}
 
-			statementNumber++;
+			conditionNumber++;
 		}
 	}
 

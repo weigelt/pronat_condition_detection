@@ -21,7 +21,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  */
 @MetaInfServices(AbstractAgent.class)
 public class ConditionDetector extends AbstractAgent {
-	public static final String STATEMENT_NUMBER = "statementNumber";
+	public static final String CONDITION_NUMBER = "conditionNumber";
 	private Synonyms synonyms;
 	public static boolean useCoreference;
 	public static boolean compensateSNLP;
@@ -33,7 +33,7 @@ public class ConditionDetector extends AbstractAgent {
 		synonyms = new Synonyms();
 	}
 
-	protected void exec() {
+	public void exec() {
 		// Load synonyms and config-data
 		synonyms.importSynonyms();
 		setConfigs();
@@ -43,10 +43,10 @@ public class ConditionDetector extends AbstractAgent {
 		for (INode node : nodes) {
 			if (firstRun) {
 				node.getType().addAttributeToType("String", "commandType");
-				node.getType().addAttributeToType("int", STATEMENT_NUMBER);
+				node.getType().addAttributeToType("int", CONDITION_NUMBER);
 			}
 			node.setAttributeValue("commandType", null);
-			node.setAttributeValue(STATEMENT_NUMBER, -1);
+			node.setAttributeValue(CONDITION_NUMBER, -1);
 		}
 
 		// Look for keywords and check heuristics
