@@ -3,7 +3,9 @@ package edu.kit.ipd.parse.conditionDetection;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,6 +84,41 @@ public class ConditionDetectorTest {
 
 		System.out.println("\nRun second time");
 		dt.exec();
+	}
+
+	/**
+	 * Tests whether the statementNumbers are set correctly.
+	 * 
+	 * @author Tobias Hey
+	 */
+	@Test
+	public void statementNumberTest() {
+		input = "Go to the fridge open the fridge if there are fresh oranges take the oranges and the water if there are no fresh oranges take the orange juice and the water";
+		try {
+			actual = snlp.parse(input, null);
+		} catch (IOException | URISyntaxException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println(Arrays.deepToString(actual));
+		graph = snlp.createParseGraph(actual);
+		dt.setGraph(graph);
+		dt.exec();
+		Set<INode> tokens = dt.getGraph().getNodesOfType(graph.getNodeType("token"));
+		int[] expected = new int[tokens.size()];
+		for (int i = 0; i < expected.length; i++) {
+			if (i < 7) {
+				expected[i] = -1;
+			} else if (i < 18) {
+				expected[i] = 0;
+			} else if (i < 31) {
+				expected[i] = 1;
+			}
+		}
+		int[] actual = new int[tokens.size()];
+		for (INode node : tokens) {
+			actual[(int) node.getAttributeValue("position")] = (int) node.getAttributeValue(ConditionDetector.STATEMENT_NUMBER);
+		}
+		Assert.assertArrayEquals(expected, actual);
 	}
 
 }
