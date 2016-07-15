@@ -21,6 +21,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  */
 @MetaInfServices(AbstractAgent.class)
 public class ConditionDetector extends AbstractAgent {
+	public static final String CONDITION_NUMBER = "conditionNumber";
 	private Synonyms synonyms;
 	public static boolean useCoreference;
 	public static boolean compensateSNLP;
@@ -32,7 +33,7 @@ public class ConditionDetector extends AbstractAgent {
 		synonyms = new Synonyms();
 	}
 
-	protected void exec() {
+	public void exec() {
 		// Load synonyms and config-data
 		synonyms.importSynonyms();
 		setConfigs();
@@ -42,8 +43,10 @@ public class ConditionDetector extends AbstractAgent {
 		for (INode node : nodes) {
 			if (firstRun) {
 				node.getType().addAttributeToType("String", "commandType");
+				node.getType().addAttributeToType("int", CONDITION_NUMBER);
 			}
 			node.setAttributeValue("commandType", null);
+			node.setAttributeValue(CONDITION_NUMBER, -1);
 		}
 
 		// Look for keywords and check heuristics
@@ -61,7 +64,8 @@ public class ConditionDetector extends AbstractAgent {
 	/**
 	 * This method executes the pattern recognition of the conditional clauses.
 	 * 
-	 * @param nodes containing the input words
+	 * @param nodes
+	 *            containing the input words
 	 * @return condition spotted in the input
 	 */
 	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes) {
@@ -86,7 +90,8 @@ public class ConditionDetector extends AbstractAgent {
 	 * Prints a formatted output of the results from the pattern recognition of
 	 * method lookForConditionalClauses().
 	 * 
-	 * @param nodes containing the input words
+	 * @param nodes
+	 *            containing the input words
 	 */
 	private void toString(INode[] nodes) {
 		String s = "\n output = ";

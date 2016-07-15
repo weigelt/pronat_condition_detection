@@ -70,8 +70,8 @@ public class StatementExtractor {
 					currStmtPos++;
 				}
 				if (currStmtPos > endOfIfStmt) {
-					logger.debug("Found section with missing commandtype. Set INDP-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1)
-							+ ".");
+					logger.debug(
+							"Found section with missing commandtype. Set INDP-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1) + ".");
 				}
 
 				// IF + THEN
@@ -82,8 +82,8 @@ public class StatementExtractor {
 					currStmtPos++;
 				}
 				if (currStmtPos > endOfIfStmt) {
-					logger.debug("Found section with missing commandtype. Set IF-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1)
-							+ ".");
+					logger.debug(
+							"Found section with missing commandtype. Set IF-Stmt from " + endOfIfStmt + " to " + (currStmtPos - 1) + ".");
 				}
 			}
 		}
@@ -325,9 +325,8 @@ public class StatementExtractor {
 			for (IArc arc : nodes[j].getOutgoingArcs()) {
 				if (arc.getType().getName().equalsIgnoreCase("coref")) { // Coref-arc to another part of the THEN- or ELSE-stmt
 					INode target = arc.getTargetNode();
-					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target)
-							|| (spottedConditions.get(i).hasElseStmt() && spottedConditions.get(i).getElseStmt().getNodeList()
-									.contains(target))) {
+					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
+							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
 						corefSearchIndex = j;
 						foundCoref = true;
 						logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
@@ -466,6 +465,7 @@ public class StatementExtractor {
 			}
 			int ifEnd = condition.getIfStmt().getEnd();
 			createStmtArcs(graph, nodes, arcType, ifBegin, ifEnd, "if"); // Add arcs between IF-Stmts
+			setConditionNumber(condition, i);
 
 			if (condition.hasThenStmt()) { // If THEN exists, add arcs
 				int thenBegin = condition.getThenStmt().getBegin();
@@ -520,6 +520,33 @@ public class StatementExtractor {
 			}
 		}
 		logger.debug("Set commandtype of arcs and nodes to the commandtype of the spotted statement.");
+	}
+
+	/**
+	 * Sets conditionNumber for the specified condition
+	 * 
+	 * @author Tobias Hey
+	 * 
+	 * @param condition
+	 *            The condition to set the number for
+	 * @param conditionNumber
+	 *            The number to set
+	 */
+	private static void setConditionNumber(ConditionContainer condition, int conditionNumber) {
+		for (INode node : condition.getIfStmt().getNodeList()) {
+			node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
+		}
+		if (condition.hasThenStmt()) {
+			for (INode node : condition.getThenStmt().getNodeList()) {
+				node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
+			}
+		}
+		if (condition.hasElseStmt()) {
+			for (INode node : condition.getElseStmt().getNodeList()) {
+				node.setAttributeValue(ConditionDetector.CONDITION_NUMBER, conditionNumber);
+			}
+		}
+
 	}
 
 	private static void createStmtArcs(IGraph graph, INode[] nodes, IArcType arcType, int beginStmt, int endStmt, String stmt) {
