@@ -16,7 +16,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  * This is the 'main'-class which starts the condition-detection-algorithm. It
  * uses the configsetting which are provided in the configfile, searches for
  * conditional statements and saves the results in the graph by transforming it.
- * 
+ *
  * @author Vanessa Steurer
  */
 @MetaInfServices(AbstractAgent.class)
@@ -28,11 +28,14 @@ public class ConditionDetector extends AbstractAgent {
 	public static boolean showDoubtfulResults;
 	public static boolean firstRun;
 
+	@Override
 	public void init() {
 		firstRun = true;
 		synonyms = new Synonyms();
+		setId("condition_detector");
 	}
 
+	@Override
 	public void exec() {
 		// Load synonyms and config-data
 		synonyms.importSynonyms();
@@ -63,13 +66,13 @@ public class ConditionDetector extends AbstractAgent {
 
 	/**
 	 * This method executes the pattern recognition of the conditional clauses.
-	 * 
+	 *
 	 * @param nodes
 	 *            containing the input words
 	 * @return condition spotted in the input
 	 */
 	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes) {
-		// If-Statement (Bedingung) 
+		// If-Statement (Bedingung)
 		List<Keyword> ifHints = KeywordScanner.searchIfKeywords(synonyms, nodes);
 		HeuristicCheck.checkForIfClause(nodes, ifHints);
 
@@ -89,7 +92,7 @@ public class ConditionDetector extends AbstractAgent {
 	/**
 	 * Prints a formatted output of the results from the pattern recognition of
 	 * method lookForConditionalClauses().
-	 * 
+	 *
 	 * @param nodes
 	 *            containing the input words
 	 */
@@ -114,13 +117,13 @@ public class ConditionDetector extends AbstractAgent {
 	/**
 	 * This method stores the nodes with type "token" in an array and returns
 	 * it.
-	 * 
+	 *
 	 * This project only uses the wordnodes (type = token) of the graph. It is
 	 * given, that these wordnodes are saved consecutive in LinkedHashSet, each
 	 * connected with an arc of type "relation". The returned array is no
 	 * deepcopy. It saves the references from each node in graph. By every
 	 * execution if this project, the array of this method has to be updated.
-	 * 
+	 *
 	 * @return nodesArray used in this project
 	 */
 	private INode[] toArrayKeepReference() {
@@ -138,7 +141,7 @@ public class ConditionDetector extends AbstractAgent {
 			System.out.println("Cannot find root-node in graph.");
 		}
 
-		for (int i = 0; i < wordNodesList.size(); i++) { // Only save the wordnodes ("token") for conditionDetection 
+		for (int i = 0; i < wordNodesList.size(); i++) { // Only save the wordnodes ("token") for conditionDetection
 			INode currNode = wordNodesList.get(i); // Run trough the graph by starting at the rootnode and going over the arcs to the next node
 			for (IArc arc : currNode.getOutgoingArcs()) {
 				if (arc.getType().getName().equalsIgnoreCase("relation")) {
