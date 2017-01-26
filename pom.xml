@@ -14,39 +14,39 @@
 			<url>http://bob.ipd.kit.edu/nexus/content/repositories/public/</url>
 		</repository>
 	</repositories>
-		<build>
-					<plugins>
-									<plugin>
-														<groupId>org.apache.maven.plugins</groupId>
-																		<artifactId>maven-jar-plugin</artifactId>
-																						<version>2.3.1</version>
-																										<configuration>
-																																<outputDirectory>${parse_bundle.directory}/plugins</outputDirectory>
-																																				</configuration>
-																																							</plugin>
-																																										<plugin>
-																																															<groupId>org.apache.maven.plugins</groupId>
-																																																			<artifactId>maven-dependency-plugin</artifactId>
-																																																							<version>3.0.0</version>
-																																																											<executions>
-																																																																	<execution>
-																																																																								<id>copy-dependencies</id>
-																																																																														<phase>package</phase>
-																																																																																				<goals>
-																																																																																												<goal>copy-dependencies</goal>
-																																																																																																		</goals>
-																																																																																																								<configuration>
-																																																																																																																<outputDirectory>${parse_bundle.directory}/plugins/libs</outputDirectory>
-																																																																																																																							<overWriteReleases>false</overWriteReleases>
-																																																																																																																														<overWriteSnapshots>false</overWriteSnapshots>
-																																																																																																																																					<overWriteIfNewer>true</overWriteIfNewer>
-																																																																																																																																												<includeScope>runtime</includeScope>
-																																																																																																																																																		</configuration>
-																																																																																																																																																							</execution>
-																																																																																																																																																											</executions>
-																																																																																																																																																														</plugin>
-																																																																																																																																																																</plugins>
-																																																																																																																																																																	</build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<outputDirectory>${parse_bundle.directory}/plugins</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${parse_bundle.directory}/plugins/libs</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+							<includeScope>runtime</includeScope>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -77,4 +77,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<properties>
+		<parse_bundle.directory>../parse_bundle</parse_bundle.directory>
+	</properties>
 </project>
