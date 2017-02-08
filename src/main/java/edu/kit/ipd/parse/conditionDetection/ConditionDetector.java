@@ -3,7 +3,6 @@ package edu.kit.ipd.parse.conditionDetection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.kohsuke.MetaInfServices;
 
@@ -127,7 +126,7 @@ public class ConditionDetector extends AbstractAgent {
 	 * @return nodesArray used in this project
 	 */
 	private INode[] toArrayKeepReference() {
-		Set<? extends INode> nodesSet = graph.getNodes();
+		List<? extends INode> nodesSet = graph.getNodes();
 		List<INode> wordNodesList = new ArrayList<INode>();
 
 		for (INode node : nodesSet) { // Find rootnode of the graph
