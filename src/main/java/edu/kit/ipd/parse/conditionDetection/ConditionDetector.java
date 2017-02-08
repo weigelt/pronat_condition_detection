@@ -21,6 +21,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 @MetaInfServices(AbstractAgent.class)
 public class ConditionDetector extends AbstractAgent {
 	public static final String CONDITION_NUMBER = "conditionNumber";
+	public static final String ID = "condition_detector";
 	private Synonyms synonyms;
 	public static boolean useCoreference;
 	public static boolean compensateSNLP;
@@ -31,7 +32,7 @@ public class ConditionDetector extends AbstractAgent {
 	public void init() {
 		firstRun = true;
 		synonyms = new Synonyms();
-		setId("condition_detector");
+		setId(ID);
 	}
 
 	@Override
