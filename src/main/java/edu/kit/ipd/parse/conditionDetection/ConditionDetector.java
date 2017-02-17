@@ -45,8 +45,10 @@ public class ConditionDetector extends AbstractAgent {
 		// Readout nodes of the graph and add a commandType attribute to each of them
 		INode[] nodes = toArrayKeepReference();
 		for (INode node : nodes) {
-			if (firstRun) {
+			if (!node.getType().containsAttribute("commandType", "String")) {
 				node.getType().addAttributeToType("String", "commandType");
+			}
+			if (!node.getType().containsAttribute(CONDITION_NUMBER, "int")) {
 				node.getType().addAttributeToType("int", CONDITION_NUMBER);
 			}
 			node.setAttributeValue("commandType", null);
