@@ -54,13 +54,13 @@ public class StatementExtractor {
 			}
 			int endOfIfStmt = currStmtPos;
 
-			//TODO: here is a sloppy BUGFIX: '&& thenHints.get(i) == null && thenHints.size() < i + 1'
+			//TODO: here is a sloppy BUGFIX: 'thenHints.isEmpty() || thenHints.size() < i + 1'
 			//sometimes the List "thenHints" is not as large as "ifHints"
 			//in this case "thenHints.get(i)" returns an out of bonds as we iterate over ifHints
 			//to fix that, we just return the so far spotted condition
 			//BUT: if this case occurs, we have an if without a then
 			// Maybe we want to spot the condition anyway and leave it to the dialog agent to ask for the 'then'
-			if (thenHints.isEmpty() && thenHints.get(i) == null && thenHints.size() < i + 1) {
+			if (thenHints.isEmpty() || thenHints.size() < i + 1) {
 				return spottedConditions;
 			}
 
