@@ -44,7 +44,7 @@ public class StatementExtractor {
 			logger.info("Concat if with then block for detected clause number " + (i + 1) + ".");
 
 			while (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip If-Statement
-					&& (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.IF_STATEMENT))) {
+					&& nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.IF_STATEMENT)) {
 				spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[currStmtPos]);
 				currStmtPos++;
 				if (currStmtPos >= nodes.length) {
@@ -54,7 +54,13 @@ public class StatementExtractor {
 			}
 			int endOfIfStmt = currStmtPos;
 
-			if (thenHints.isEmpty()) {
+			//TODO: here is a sloppy BUGFIX: '&& thenHints.get(i) == null'
+			//sometimes the List "thenHints" is not as large as "ifHints"
+			//in this case "thenHints.get(i)" returns an out of bonds as we iterate over ifHints
+			//to fix that, we just return the so far spotted condition
+			//BUT: if this case occurs, we have an if without a then
+			// Maybe we want to spot the condition anyway and leave it to the dialog agent to ask for the 'then'
+			if (thenHints.isEmpty() && thenHints.get(i) == null) {
 				return spottedConditions;
 			}
 
@@ -180,7 +186,7 @@ public class StatementExtractor {
 	private static int skipThenOrIndpStmt(INode[] nodes, List<ConditionContainer> spottedConditions, int i, int currStmt,
 			CommandType cmdtype) {
 		while (nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip IF,THEN or INDP-Statement
-				&& (nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(cmdtype))) {
+				&& nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(cmdtype)) {
 			spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmt]);
 			currStmt++;
 			if (currStmt >= nodes.length) {
@@ -240,7 +246,7 @@ public class StatementExtractor {
 		}
 
 		//noun phrase: NP _or_ noun block: NP NP; NP PP NP; NP CC NP;
-		if ((endOfThen + 1) < nextStmt
+		if (endOfThen + 1 < nextStmt
 				&& (SyntaxHelper.isNounPhrase(nodes, endOfThen + 1) || SyntaxHelper.isNounBlock(nodes, endOfThen + 1, nextStmt)
 						|| SyntaxHelper.isAdverbPhrase(nodes, endOfThen + 1) || SyntaxHelper.isParticlePhrase(nodes, endOfThen + 1))) {
 			endOfThen += 1;
@@ -325,8 +331,8 @@ public class StatementExtractor {
 			for (IArc arc : nodes[j].getOutgoingArcs()) {
 				if (arc.getType().getName().equalsIgnoreCase("coref")) { // Coref-arc to another part of the THEN- or ELSE-stmt
 					INode target = arc.getTargetNode();
-					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
-							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
+					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || spottedConditions.get(i).hasElseStmt()
+							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target)) {
 						corefSearchIndex = j;
 						foundCoref = true;
 						logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
@@ -524,9 +530,9 @@ public class StatementExtractor {
 
 	/**
 	 * Sets conditionNumber for the specified condition
-	 * 
+	 *
 	 * @author Tobias Hey
-	 * 
+	 *
 	 * @param condition
 	 *            The condition to set the number for
 	 * @param conditionNumber
