@@ -425,8 +425,14 @@ public class StatementExtractor {
 			} else {
 				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
 			}
-			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
-			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			}
+			if (!arcType.containsAttribute(COMMANDTYPELOCATION_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			}
+
+			//			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
 			logger.info("Transform graph according to the spotted conditions.");
 
 		} else { // Add arctype "statement". Delete arcs of conditionDetection-run before!!
@@ -444,8 +450,12 @@ public class StatementExtractor {
 			} else {
 				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
 			}
-			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
-			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			}
+			if (!arcType.containsAttribute(COMMANDTYPELOCATION_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			}
 			logger.info("Transform graph according to the spotted conditions.");
 		}
 

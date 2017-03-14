@@ -3,7 +3,6 @@ package edu.kit.ipd.parse.conditionDetection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -151,7 +150,7 @@ public class ConditionDetector extends AbstractAgent {
 			if (graph instanceof ParseGraph) {
 				ParseGraph pGraph = (ParseGraph) graph;
 				INode current = pGraph.getFirstUtteranceNode();
-				Set<? extends IArc> outgoingNextArcs = current.getOutgoingArcsOfType(nextArcType);
+				List<? extends IArc> outgoingNextArcs = current.getOutgoingArcsOfType(nextArcType);
 				boolean hasNext = !outgoingNextArcs.isEmpty();
 				wordNodesList.add(current);
 				while (hasNext) {
