@@ -3,14 +3,18 @@ package edu.kit.ipd.parse.conditionDetection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.kohsuke.MetaInfServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
+import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.graph.IArc;
+import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
+import edu.kit.ipd.parse.luna.graph.ParseGraph;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
 /**
@@ -30,6 +34,8 @@ public class ConditionDetector extends AbstractAgent {
 	public static boolean showDoubtfulResults;
 	public static boolean firstRun;
 
+	private static final Logger logger = LoggerFactory.getLogger(ConditionDetector.class);
+
 	@Override
 	public void init() {
 		firstRun = true;
@@ -44,7 +50,13 @@ public class ConditionDetector extends AbstractAgent {
 		setConfigs();
 
 		// Readout nodes of the graph and add a commandType attribute to each of them
-		INode[] nodes = toArrayKeepReference();
+		INode[] nodes = null;
+		try {
+			nodes = toArrayKeepReference(graph);
+		} catch (MissingDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		for (INode node : nodes) {
 			if (!node.getType().containsAttribute("commandType", "String")) {
 				node.getType().addAttributeToType("String", "commandType");
@@ -130,37 +142,38 @@ public class ConditionDetector extends AbstractAgent {
 	 *
 	 * @return nodesArray used in this project
 	 */
-	private INode[] toArrayKeepReference() {
-		Set<? extends INode> nodesSet = graph.getNodes();
+
+	public static final INode[] toArrayKeepReference(IGraph graph) throws MissingDataException {
 		List<INode> wordNodesList = new ArrayList<INode>();
-
-		for (INode node : nodesSet) { // Find rootnode of the graph
-			if (node.getType().getName().equalsIgnoreCase("token") && (int) node.getAttributeValue("position") == 0) {
-				wordNodesList.add(node);
-				break;
-			}
-		}
-
-		if (wordNodesList.isEmpty()) {
-			System.out.println("Cannot find root-node in graph.");
-		}
-
-		for (int i = 0; i < wordNodesList.size(); i++) { // Only save the wordnodes ("token") for conditionDetection
-			INode currNode = wordNodesList.get(i); // Run trough the graph by starting at the rootnode and going over the arcs to the next node
-			for (IArc arc : currNode.getOutgoingArcs()) {
-				if (arc.getType().getName().equalsIgnoreCase("relation")) {
-					currNode = arc.getTargetNode();
-					wordNodesList.add(currNode);
+		IArcType nextArcType;
+		if ((nextArcType = graph.getArcType("relation")) != null) {
+			if (graph instanceof ParseGraph) {
+				ParseGraph pGraph = (ParseGraph) graph;
+				INode current = pGraph.getFirstUtteranceNode();
+				List<? extends IArc> outgoingNextArcs = current.getOutgoingArcsOfType(nextArcType);
+				boolean hasNext = !outgoingNextArcs.isEmpty();
+				wordNodesList.add(current);
+				while (hasNext) {
+					//assume that only one NEXT arc exists
+					if (outgoingNextArcs.size() == 1) {
+						current = outgoingNextArcs.toArray(new IArc[outgoingNextArcs.size()])[0].getTargetNode();
+						wordNodesList.add(current);
+						outgoingNextArcs = current.getOutgoingArcsOfType(nextArcType);
+						hasNext = !outgoingNextArcs.isEmpty();
+					} else {
+						logger.error("Nodes have more than one NEXT Arc");
+						throw new IllegalArgumentException("Nodes have more than one NEXT Arc");
+					}
 				}
+			} else {
+				logger.error("Graph is no ParseGraph!");
+				throw new MissingDataException("Graph is no ParseGraph!");
 			}
+		} else {
+			logger.error("Next Arctype does not exist!");
+			throw new MissingDataException("Next Arctype does not exist!");
 		}
-
-		INode[] nodesArray = new INode[wordNodesList.size()];
-		for (int i = 0; i < wordNodesList.size(); i++) { // Create an array with the persisting references on the graph
-			nodesArray[i] = wordNodesList.get(i);
-		}
-
-		return nodesArray;
+		return wordNodesList.toArray(new INode[wordNodesList.size()]);
 	}
 
 }

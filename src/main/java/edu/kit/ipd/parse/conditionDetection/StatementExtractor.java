@@ -2,7 +2,6 @@ package edu.kit.ipd.parse.conditionDetection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,7 @@ public class StatementExtractor {
 			logger.info("Concat if with then block for detected clause number " + (i + 1) + ".");
 
 			while (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip If-Statement
-					&& (nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.IF_STATEMENT))) {
+					&& nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.IF_STATEMENT)) {
 				spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[currStmtPos]);
 				currStmtPos++;
 				if (currStmtPos >= nodes.length) {
@@ -55,7 +54,13 @@ public class StatementExtractor {
 			}
 			int endOfIfStmt = currStmtPos;
 
-			if (thenHints.isEmpty()) {
+			//TODO: here is a sloppy BUGFIX: 'thenHints.isEmpty() || thenHints.size() < i + 1'
+			//sometimes the List "thenHints" is not as large as "ifHints"
+			//in this case "thenHints.get(i)" returns an out of bonds as we iterate over ifHints
+			//to fix that, we just return the so far spotted condition
+			//BUT: if this case occurs, we have an if without a then
+			// Maybe we want to spot the condition anyway and leave it to the dialog agent to ask for the 'then'
+			if (thenHints.isEmpty() || thenHints.size() < i + 1) {
 				return spottedConditions;
 			}
 
@@ -181,7 +186,7 @@ public class StatementExtractor {
 	private static int skipThenOrIndpStmt(INode[] nodes, List<ConditionContainer> spottedConditions, int i, int currStmt,
 			CommandType cmdtype) {
 		while (nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null // Skip IF,THEN or INDP-Statement
-				&& (nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(cmdtype))) {
+				&& nodes[currStmt].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(cmdtype)) {
 			spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmt]);
 			currStmt++;
 			if (currStmt >= nodes.length) {
@@ -241,7 +246,7 @@ public class StatementExtractor {
 		}
 
 		//noun phrase: NP _or_ noun block: NP NP; NP PP NP; NP CC NP;
-		if ((endOfThen + 1) < nextStmt
+		if (endOfThen + 1 < nextStmt
 				&& (SyntaxHelper.isNounPhrase(nodes, endOfThen + 1) || SyntaxHelper.isNounBlock(nodes, endOfThen + 1, nextStmt)
 						|| SyntaxHelper.isAdverbPhrase(nodes, endOfThen + 1) || SyntaxHelper.isParticlePhrase(nodes, endOfThen + 1))) {
 			endOfThen += 1;
@@ -386,11 +391,11 @@ public class StatementExtractor {
 	}
 
 	private static INode getContainingEntityNode(INode iNode, IGraph graph) {
-		Set<? extends IArc> referenceArcs = iNode.getIncomingArcsOfType(graph.getArcType("reference"));
+		List<? extends IArc> referenceArcs = iNode.getIncomingArcsOfType(graph.getArcType("reference"));
 		if (!referenceArcs.isEmpty()) {
-			IArc referenceArc = referenceArcs.iterator().next();
+			IArc referenceArc = referenceArcs.get(0);
 			while (!(referenceArcs = referenceArc.getSourceNode().getIncomingArcsOfType(graph.getArcType("reference"))).isEmpty()) {
-				referenceArc = referenceArcs.iterator().next();
+				referenceArc = referenceArcs.get(0);
 			}
 			INode sourceNode = referenceArc.getSourceNode();
 			if (sourceNode.getType().equals(graph.getNodeType("contextEntity"))) {
@@ -401,11 +406,11 @@ public class StatementExtractor {
 	}
 
 	private static INode getEndOfReference(INode iNode, IGraph graph) {
-		Set<? extends IArc> referenceArcs = iNode.getOutgoingArcsOfType(graph.getArcType("reference"));
+		List<? extends IArc> referenceArcs = iNode.getOutgoingArcsOfType(graph.getArcType("reference"));
 		if (!referenceArcs.isEmpty()) {
-			IArc referenceArc = referenceArcs.iterator().next();
+			IArc referenceArc = referenceArcs.get(0);
 			while (!(referenceArcs = referenceArc.getTargetNode().getOutgoingArcsOfType(graph.getArcType("reference"))).isEmpty()) {
-				referenceArc = referenceArcs.iterator().next();
+				referenceArc = referenceArcs.get(0);
 			}
 			INode targetNode = referenceArc.getTargetNode();
 			if (targetNode.getType().equals(graph.getNodeType("token"))) {
@@ -476,8 +481,14 @@ public class StatementExtractor {
 			} else {
 				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
 			}
-			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
-			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			}
+			if (!arcType.containsAttribute(COMMANDTYPELOCATION_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			}
+
+			//			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
 			logger.info("Transform graph according to the spotted conditions.");
 
 		} else { // Add arctype "statement". Delete arcs of conditionDetection-run before!!
@@ -495,8 +506,12 @@ public class StatementExtractor {
 			} else {
 				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
 			}
-			arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
-			arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			}
+			if (!arcType.containsAttribute(COMMANDTYPELOCATION_ATTRIBUTE, "String")) {
+				arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
+			}
 			logger.info("Transform graph according to the spotted conditions.");
 		}
 
@@ -581,9 +596,9 @@ public class StatementExtractor {
 
 	/**
 	 * Sets conditionNumber for the specified condition
-	 * 
+	 *
 	 * @author Tobias Hey
-	 * 
+	 *
 	 * @param condition
 	 *            The condition to set the number for
 	 * @param conditionNumber

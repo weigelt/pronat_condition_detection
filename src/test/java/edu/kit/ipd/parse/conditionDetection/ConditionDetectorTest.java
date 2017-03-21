@@ -3,7 +3,7 @@ package edu.kit.ipd.parse.conditionDetection;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -81,14 +81,19 @@ public class ConditionDetectorTest {
 		dt.setGraph(graph);
 		System.out.println("Run first time");
 		dt.exec();
-
-		System.out.println("\nRun second time");
+		IGraph pg_first = graph.clone();
+		System.out.println(graph);
+		//		System.out.println("\nRun second time");
 		dt.exec();
+		//				System.out.println(pg_first);
+		//		System.out.println(graph);
+		Assert.assertEquals(pg_first, graph);
+		//		System.out.println(pg_first);
 	}
 
 	/**
 	 * Tests whether the conditionNumbers are set correctly.
-	 * 
+	 *
 	 * @author Tobias Hey
 	 */
 	@Test
@@ -103,7 +108,7 @@ public class ConditionDetectorTest {
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
 		dt.exec();
-		Set<INode> tokens = dt.getGraph().getNodesOfType(graph.getNodeType("token"));
+		List<INode> tokens = dt.getGraph().getNodesOfType(graph.getNodeType("token"));
 		int[] expected = new int[tokens.size()];
 		for (int i = 0; i < expected.length; i++) {
 			if (i < 7) {
