@@ -27,6 +27,8 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 @MetaInfServices(AbstractAgent.class)
 public class ConditionDetector extends AbstractAgent {
 	public static final String CONDITION_NUMBER = "conditionNumber";
+	private static final String CONDITION_TYPE_ATTRIBUTE = "commandType";
+	private static final String VERIFIED_BY_DA_SUFFIX = "Verified";
 	public static final String ID = "condition_detector";
 	private Synonyms synonyms;
 	public static boolean useCoreference;
@@ -57,15 +59,22 @@ public class ConditionDetector extends AbstractAgent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		boolean[] verifiedCondition = new boolean[nodes.length];
 		for (INode node : nodes) {
-			if (!node.getType().containsAttribute("commandType", "String")) {
+			if (!node.getType().containsAttribute(CONDITION_TYPE_ATTRIBUTE, "String")) {
 				node.getType().addAttributeToType("String", "commandType");
 			}
 			if (!node.getType().containsAttribute(CONDITION_NUMBER, "int")) {
 				node.getType().addAttributeToType("int", CONDITION_NUMBER);
 			}
-			node.setAttributeValue("commandType", null);
-			node.setAttributeValue(CONDITION_NUMBER, -1);
+			if (node.getType().containsAttribute(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX, "boolean")) {
+				if ((boolean) node.getAttributeValue(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX)) {
+					//TODO go on here
+				}
+			} else {
+				node.setAttributeValue("commandType", null);
+				node.setAttributeValue(CONDITION_NUMBER, -1);
+			}
 		}
 
 		// Look for keywords and check heuristics
