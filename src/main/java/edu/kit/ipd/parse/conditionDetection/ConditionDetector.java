@@ -9,6 +9,7 @@ import org.kohsuke.MetaInfServices;
 
 import edu.kit.ipd.parse.luna.agent.AbstractAgent;
 import edu.kit.ipd.parse.luna.graph.IArc;
+import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
@@ -56,7 +57,7 @@ public class ConditionDetector extends AbstractAgent {
 		}
 
 		// Look for keywords and check heuristics
-		List<ConditionContainer> spottedConditions = lookForConditionalClauses(nodes);
+		List<ConditionContainer> spottedConditions = lookForConditionalClauses(nodes, graph);
 
 		// Transform the graph on the basis of the found commandTypes
 		StatementExtractor.transformGraph(graph, nodes, spottedConditions);
@@ -74,7 +75,7 @@ public class ConditionDetector extends AbstractAgent {
 	 *            containing the input words
 	 * @return condition spotted in the input
 	 */
-	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes) {
+	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes, IGraph graph) {
 		// If-Statement (Bedingung)
 		List<Keyword> ifHints = KeywordScanner.searchIfKeywords(synonyms, nodes);
 		HeuristicCheck.checkForIfClause(nodes, ifHints);
@@ -87,7 +88,7 @@ public class ConditionDetector extends AbstractAgent {
 		// Else-Statement (Alternativ-Anweisung)
 		List<Keyword> elseHints = KeywordScanner.searchElseKeywords(synonyms, nodes, ifHints);
 		HeuristicCheck.checkForElseClause(nodes, elseHints);
-		spottedConditions = StatementExtractor.concatThenWithElse(nodes, spottedConditions, thenHints, elseHints);
+		spottedConditions = StatementExtractor.concatThenWithElse(nodes, spottedConditions, thenHints, elseHints, graph);
 
 		return spottedConditions;
 	}

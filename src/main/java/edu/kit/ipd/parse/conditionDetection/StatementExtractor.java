@@ -2,6 +2,7 @@ package edu.kit.ipd.parse.conditionDetection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,7 @@ public class StatementExtractor {
 	}
 
 	public static List<ConditionContainer> concatThenWithElse(INode[] nodes, List<ConditionContainer> spottedConditions,
-			List<Keyword> thenHints, List<Keyword> elseHints) {
+			List<Keyword> thenHints, List<Keyword> elseHints, IGraph graph) {
 		for (int i = 0; i < thenHints.size(); i++) {
 			int currStmtPos = thenHints.get(i).getKeywordBegin();
 			int endOfStmt;
@@ -124,7 +125,7 @@ public class StatementExtractor {
 				} else {
 					if (ConditionDetector.useCoreference) {
 						int corefSearchBegin = currStmtPos;
-						currStmtPos = checkForCoreference(nodes, spottedConditions, i, corefSearchBegin);
+						currStmtPos = checkForCoreference(nodes, spottedConditions, i, corefSearchBegin, graph);
 
 						if (currStmtPos > corefSearchBegin) {
 							for (int j = corefSearchBegin; j <= currStmtPos; j++) {
@@ -167,7 +168,7 @@ public class StatementExtractor {
 								+ ".\n");
 					}
 				}
-				determineEndOfElse(nodes, spottedConditions, elseHints); // updates spottedConditions
+				determineEndOfElse(nodes, spottedConditions, elseHints, graph); // updates spottedConditions
 			}
 
 			spottedConditions.get(i).setConditionBegin();
@@ -275,7 +276,8 @@ public class StatementExtractor {
 		logger.debug("Found then-clause by not considering a spotted keyword from position" + lookForVerb + " to " + endOfThen + ".\n");
 	}
 
-	private static void determineEndOfElse(INode[] nodes, List<ConditionContainer> spottedConditions, List<Keyword> elseHints) {
+	private static void determineEndOfElse(INode[] nodes, List<ConditionContainer> spottedConditions, List<Keyword> elseHints,
+			IGraph graph) {
 		for (int i = 0; i < elseHints.size(); i++) {
 			if (!elseHints.get(i).isDummy()) {
 				spottedConditions.get(i).setElseStmt(new ElseStatement(new ArrayList<INode>()));
@@ -293,7 +295,7 @@ public class StatementExtractor {
 
 				if (ConditionDetector.useCoreference) {
 					int corefSearchBegin = currStmtPos;
-					currStmtPos = checkForCoreference(nodes, spottedConditions, i, currStmtPos);
+					currStmtPos = checkForCoreference(nodes, spottedConditions, i, currStmtPos, graph);
 
 					if (currStmtPos > corefSearchBegin) {
 						for (int j = corefSearchBegin; j <= currStmtPos; j++) {
@@ -312,7 +314,8 @@ public class StatementExtractor {
 		}
 	}
 
-	private static int checkForCoreference(INode[] nodes, List<ConditionContainer> spottedConditions, int i, int corefSearchIndex) {
+	private static int checkForCoreference(INode[] nodes, List<ConditionContainer> spottedConditions, int i, int corefSearchIndex,
+			IGraph graph) {
 		int nextStmt = corefSearchIndex;
 		boolean foundCoref = false;
 
@@ -322,17 +325,41 @@ public class StatementExtractor {
 		}
 
 		for (int j = corefSearchIndex; j < nextStmt; j++) {
-			for (IArc arc : nodes[j].getOutgoingArcs()) {
-				if (arc.getType().getName().equalsIgnoreCase("coref")) { // Coref-arc to another part of the THEN- or ELSE-stmt
-					INode target = arc.getTargetNode();
-					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
-							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
-						corefSearchIndex = j;
-						foundCoref = true;
-						logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
+			INode entityNode = getContainingEntityNode(nodes[j], graph);
+			if (entityNode != null) {
+				INode targetEntityNode = null;
+				double confidence = 0.0d;
+				for (IArc arc : entityNode.getOutgoingArcsOfType(graph.getArcType("contextRelation"))) {
+					if (arc.getAttributeValue("name").equals("referentRelation")) {
+						if ((double) arc.getAttributeValue("confidence") > confidence) {
+							targetEntityNode = arc.getTargetNode();
+							confidence = (double) arc.getAttributeValue("confidence");
+						}
+					}
+				}
+				if (targetEntityNode != null) {
+					INode target = getEndOfReference(targetEntityNode, graph);
+					if (target != null) {
+						if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
+								&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
+							corefSearchIndex = j;
+							foundCoref = true;
+							logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
+						}
 					}
 				}
 			}
+			//			for (IArc arc : nodes[j].getOutgoingArcs()) {
+			//				if (arc.getType().getName().equalsIgnoreCase("coref")) { // Coref-arc to another part of the THEN- or ELSE-stmt
+			//					INode target = arc.getTargetNode();
+			//					if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
+			//							&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
+			//						corefSearchIndex = j;
+			//						foundCoref = true;
+			//						logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
+			//					}
+			//				}
+			//			}
 		}
 
 		if (foundCoref) {
@@ -356,6 +383,36 @@ public class StatementExtractor {
 		}
 
 		return corefSearchIndex;
+	}
+
+	private static INode getContainingEntityNode(INode iNode, IGraph graph) {
+		Set<? extends IArc> referenceArcs = iNode.getIncomingArcsOfType(graph.getArcType("reference"));
+		if (!referenceArcs.isEmpty()) {
+			IArc referenceArc = referenceArcs.iterator().next();
+			while (!(referenceArcs = referenceArc.getSourceNode().getIncomingArcsOfType(graph.getArcType("reference"))).isEmpty()) {
+				referenceArc = referenceArcs.iterator().next();
+			}
+			INode sourceNode = referenceArc.getSourceNode();
+			if (sourceNode.getType().equals(graph.getNodeType("contextEntity"))) {
+				return sourceNode;
+			}
+		}
+		return null;
+	}
+
+	private static INode getEndOfReference(INode iNode, IGraph graph) {
+		Set<? extends IArc> referenceArcs = iNode.getOutgoingArcsOfType(graph.getArcType("reference"));
+		if (!referenceArcs.isEmpty()) {
+			IArc referenceArc = referenceArcs.iterator().next();
+			while (!(referenceArcs = referenceArc.getTargetNode().getOutgoingArcsOfType(graph.getArcType("reference"))).isEmpty()) {
+				referenceArc = referenceArcs.iterator().next();
+			}
+			INode targetNode = referenceArc.getTargetNode();
+			if (targetNode.getType().equals(graph.getNodeType("token"))) {
+				return targetNode;
+			}
+		}
+		return null;
 	}
 
 	private static int searchEndOfCurrChunk(INode[] nodes, int nextStmt, int nextWord, int endOfBlock) {
