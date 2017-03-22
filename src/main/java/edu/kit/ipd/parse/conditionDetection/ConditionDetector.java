@@ -69,7 +69,8 @@ public class ConditionDetector extends AbstractAgent {
 				node.getType().addAttributeToType("int", CONDITION_NUMBER);
 			}
 			if (node.getType().containsAttribute(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX, "boolean")) {
-				if ((boolean) node.getAttributeValue(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX)) {
+				if (node.getAttributeValue(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX) != null
+						&& (boolean) node.getAttributeValue(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX)) {
 					verifiedConditions[i] = true;
 				}
 			} else {
