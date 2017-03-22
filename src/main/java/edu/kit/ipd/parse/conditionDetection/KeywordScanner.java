@@ -13,7 +13,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 /**
  * Static helperclass, which provides methods for scanning text on keywords of
  * if, then and else-clauses.
- * 
+ *
  * @author Vanessa Steurer
  */
 public class KeywordScanner {
@@ -47,7 +47,7 @@ public class KeywordScanner {
 				}
 
 				for (int k = 0; k < ifSynonymList.get(j).size(); k++) { // Consider synonyms consisting of more than one word
-					if ((i - 1) >= 0) {
+					if (i - 1 >= 0) {
 						if (ifSynonymList.get(j).get(0).equalsIgnoreCase("if")
 								&& nodes[i].getAttributeValue("value").toString().equalsIgnoreCase("if")
 								&& (nodes[i - 1].getAttributeValue("value").toString().equalsIgnoreCase("only")
@@ -108,8 +108,8 @@ public class KeywordScanner {
 			}
 			logger.info("Search for then-keywords in detected if-clause number {}", keywordIndex + 1);
 
-			currStmt = skipStatement(nodes, currStmt, CommandType.IF_STATEMENT); // Skip if-statement	
-			logger.debug("Search then-keywords between position {} and {}", currStmt, (nextStmt - 1));
+			currStmt = skipStatement(nodes, currStmt, CommandType.IF_STATEMENT); // Skip if-statement
+			logger.debug("Search then-keywords between position {} and {}", currStmt, nextStmt - 1);
 
 			int firstDetectedVerb = currStmt;
 			boolean foundVerb = false;
@@ -125,7 +125,7 @@ public class KeywordScanner {
 			}
 
 			if (nodes[currStmt].getAttributeValue(COMMAND_TYPE) == null) { // Search for then-keywords in input
-				for (int i = currStmt; i < firstDetectedVerb; i++) { // FIRST: Search between end of if-stmt to next verb	
+				for (int i = currStmt; i < firstDetectedVerb; i++) { // FIRST: Search between end of if-stmt to next verb
 					if (isKeyword) {
 						break;
 					}
@@ -204,7 +204,7 @@ public class KeywordScanner {
 	}
 
 	private static boolean hasNext(int currentWord, int numberOfWords) {
-		return (currentWord + 1) < numberOfWords;
+		return currentWord + 1 < numberOfWords;
 	}
 
 	private static int skipStatement(INode[] nodes, int currStmt, CommandType commandType) { // first word after statement
@@ -253,13 +253,13 @@ public class KeywordScanner {
 
 		return false;
 	}
-
-	private static String tooString(List<Keyword> keywords) {
-		String keywordsFound = "";
-		for (Keyword keyword : keywords) {
-			keywordsFound = keywordsFound.concat(keyword.getKeyword() + ",");
-		}
-
-		return keywordsFound;
-	}
+	//
+	//	private static String tooString(List<Keyword> keywords) {
+	//		String keywordsFound = "";
+	//		for (Keyword keyword : keywords) {
+	//			keywordsFound = keywordsFound.concat(keyword.getKeyword() + ",");
+	//		}
+	//
+	//		return keywordsFound;
+	//	}
 }

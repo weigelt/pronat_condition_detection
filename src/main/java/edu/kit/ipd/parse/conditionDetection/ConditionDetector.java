@@ -59,8 +59,9 @@ public class ConditionDetector extends AbstractAgent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		boolean[] verifiedCondition = new boolean[nodes.length];
-		for (INode node : nodes) {
+		boolean[] verifiedConditions = new boolean[nodes.length];
+		for (int i = 0; i < nodes.length; i++) {
+			INode node = nodes[i];
 			if (!node.getType().containsAttribute(CONDITION_TYPE_ATTRIBUTE, "String")) {
 				node.getType().addAttributeToType("String", "commandType");
 			}
@@ -69,7 +70,7 @@ public class ConditionDetector extends AbstractAgent {
 			}
 			if (node.getType().containsAttribute(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX, "boolean")) {
 				if ((boolean) node.getAttributeValue(CONDITION_TYPE_ATTRIBUTE + VERIFIED_BY_DA_SUFFIX)) {
-					//TODO go on here
+					verifiedConditions[i] = true;
 				}
 			} else {
 				node.setAttributeValue("commandType", null);
@@ -78,7 +79,7 @@ public class ConditionDetector extends AbstractAgent {
 		}
 
 		// Look for keywords and check heuristics
-		List<ConditionContainer> spottedConditions = lookForConditionalClauses(nodes, graph);
+		List<ConditionContainer> spottedConditions = lookForConditionalClauses(nodes, graph, verifiedConditions);
 
 		// Transform the graph on the basis of the found commandTypes
 		StatementExtractor.transformGraph(graph, nodes, spottedConditions);
@@ -94,22 +95,25 @@ public class ConditionDetector extends AbstractAgent {
 	 *
 	 * @param nodes
 	 *            containing the input words
+	 * @param verifiedConditions
+	 * @param verifiedConditions
 	 * @return condition spotted in the input
 	 */
-	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes, IGraph graph) {
+	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes, IGraph graph, boolean[] verifiedConditions) {
 		// If-Statement (Bedingung)
 		List<Keyword> ifHints = KeywordScanner.searchIfKeywords(synonyms, nodes);
-		HeuristicCheck.checkForIfClause(nodes, ifHints);
+		HeuristicCheck.checkForIfClause(nodes, ifHints, verifiedConditions);
 
 		// Then-Statement (Folgeanweisung)
 		List<Keyword> thenHints = KeywordScanner.searchThenKeywords(synonyms, nodes, ifHints);
-		HeuristicCheck.checkForThenClause(nodes, thenHints);
-		List<ConditionContainer> spottedConditions = StatementExtractor.concatIfWithThen(nodes, ifHints, thenHints);
+		HeuristicCheck.checkForThenClause(nodes, thenHints, verifiedConditions);
+		List<ConditionContainer> spottedConditions = StatementExtractor.concatIfWithThen(nodes, ifHints, thenHints, verifiedConditions);
 
 		// Else-Statement (Alternativ-Anweisung)
 		List<Keyword> elseHints = KeywordScanner.searchElseKeywords(synonyms, nodes, ifHints);
-		HeuristicCheck.checkForElseClause(nodes, elseHints);
-		spottedConditions = StatementExtractor.concatThenWithElse(nodes, spottedConditions, thenHints, elseHints, graph);
+		HeuristicCheck.checkForElseClause(nodes, elseHints, verifiedConditions);
+		spottedConditions = StatementExtractor.concatThenWithElse(nodes, spottedConditions, thenHints, elseHints, graph,
+				verifiedConditions);
 
 		return spottedConditions;
 	}
@@ -183,6 +187,13 @@ public class ConditionDetector extends AbstractAgent {
 			throw new MissingDataException("Next Arctype does not exist!");
 		}
 		return wordNodesList.toArray(new INode[wordNodesList.size()]);
+	}
+
+	static void setNodeAttribute(INode node, int nodeIndex, String attrName, CommandType statement, boolean[] verifiedByDA) {
+		if (!verifiedByDA[nodeIndex]) {
+			node.setAttributeValue(attrName, statement);
+			System.out.println(node.toString() + " - Set attr: " + attrName + " - " + statement);
+		}
 	}
 
 }

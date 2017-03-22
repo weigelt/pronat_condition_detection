@@ -37,7 +37,7 @@ public class HeuristicCheckSNLP_ELSE {
 		createGraph(input);
 		List<Keyword> elseHints = new ArrayList<Keyword>();
 		elseHints.add(new Keyword(null, "DUMMY_KEYWORD", 7, 7));
-		HeuristicCheck.checkForElseClause(graph.getNodes().toArray(new ParseNode[0]), elseHints);
+		HeuristicCheck.checkForElseClause(graph.getNodes().toArray(new ParseNode[0]), elseHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 0; i < nodes.length; i++) {
@@ -52,12 +52,12 @@ public class HeuristicCheckSNLP_ELSE {
 		createGraph(input);
 		List<Keyword> elseHints = new ArrayList<Keyword>();
 		elseHints.add(new Keyword(CommandType.ELSE_STATEMENT, "else", 7, 7));
-		HeuristicCheck.checkForElseClause(graph.getNodes().toArray(new ParseNode[0]), elseHints);
+		HeuristicCheck.checkForElseClause(graph.getNodes().toArray(new ParseNode[0]), elseHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 7; i < nodes.length; i++) {
-			System.out.println("word: " + nodes[i].getAttributeValue("value") + " " + "command: "
-					+ nodes[i].getAttributeValue("commandType"));
+			System.out.println(
+					"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
 			Assert.assertEquals(CommandType.INDEPENDENT_STATEMENT, nodes[i].getAttributeValue("commandType"));
 			//assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
 		}
@@ -69,7 +69,7 @@ public class HeuristicCheckSNLP_ELSE {
 		createGraph(input);
 		List<Keyword> elseHints = new ArrayList<Keyword>();
 		elseHints.add(new Keyword(CommandType.ELSE_STATEMENT, "else", 0, 0));
-		HeuristicCheck.checkForElseClause(graph.getNodes().toArray(new ParseNode[0]), elseHints);
+		HeuristicCheck.checkForElseClause(graph.getNodes().toArray(new ParseNode[0]), elseHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 0; i < 7; i++) {

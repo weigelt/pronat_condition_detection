@@ -61,6 +61,7 @@ public class CoreferenceTest {
 		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
+		System.out.println(graph.toString());
 	}
 
 	//@Ignore

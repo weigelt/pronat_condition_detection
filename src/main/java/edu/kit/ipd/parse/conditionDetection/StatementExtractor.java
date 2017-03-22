@@ -27,8 +27,9 @@ public class StatementExtractor {
 
 	}
 
-	public static List<ConditionContainer> concatIfWithThen(INode[] nodes, List<Keyword> ifHints, List<Keyword> thenHints) {
-		setCmdtypeIfNoStmtFound(nodes, ifHints);
+	public static List<ConditionContainer> concatIfWithThen(INode[] nodes, List<Keyword> ifHints, List<Keyword> thenHints,
+			boolean[] verfiedByDA) {
+		setCmdtypeIfNoStmtFound(nodes, ifHints, verfiedByDA);
 		List<ConditionContainer> spottedConditions = new ArrayList<ConditionContainer>();
 
 		for (int i = 0; i < ifHints.size(); i++) {
@@ -67,10 +68,11 @@ public class StatementExtractor {
 			// IF + INDP
 			spottedConditions.get(i).setThenStmt(new ThenStatement(new ArrayList<INode>()));
 			if (thenHints.get(i).isDummy()) {
-				checkForFalseThenKeyword(nodes, spottedConditions, thenHints, i, endOfIfStmt, nextStmt); // updates spottedConditions
+				checkForFalseThenKeyword(nodes, spottedConditions, thenHints, i, endOfIfStmt, nextStmt, verfiedByDA); // updates spottedConditions
 
 				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-					nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+					ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE,
+							CommandType.INDEPENDENT_STATEMENT, verfiedByDA);
 					spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 					spottedConditions.get(i).getThenStmt().setINDP();
 					currStmtPos++;
@@ -83,7 +85,8 @@ public class StatementExtractor {
 				// IF + THEN
 			} else {
 				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-					nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.IF_STATEMENT);
+					ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE, CommandType.IF_STATEMENT,
+							verfiedByDA);
 					spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[currStmtPos]);
 					currStmtPos++;
 				}
@@ -98,7 +101,7 @@ public class StatementExtractor {
 	}
 
 	public static List<ConditionContainer> concatThenWithElse(INode[] nodes, List<ConditionContainer> spottedConditions,
-			List<Keyword> thenHints, List<Keyword> elseHints, IGraph graph) {
+			List<Keyword> thenHints, List<Keyword> elseHints, IGraph graph, boolean[] verfiedByDA) {
 		for (int i = 0; i < thenHints.size(); i++) {
 			int currStmtPos = thenHints.get(i).getKeywordBegin();
 			int endOfStmt;
@@ -116,7 +119,8 @@ public class StatementExtractor {
 				// IF + INDP, no ELSE
 				if (thenHints.get(i).isDummy()) {
 					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+						ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE,
+								CommandType.INDEPENDENT_STATEMENT, verfiedByDA);
 						spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 						spottedConditions.get(i).getThenStmt().setINDP();
 						currStmtPos++;
@@ -134,7 +138,8 @@ public class StatementExtractor {
 
 						if (currStmtPos > corefSearchBegin) {
 							for (int j = corefSearchBegin; j <= currStmtPos; j++) {
-								nodes[j].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
+								ConditionDetector.setNodeAttribute(nodes[j], j, COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT,
+										verfiedByDA);
 								spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[j]);
 							}
 							currStmtPos++;
@@ -142,7 +147,8 @@ public class StatementExtractor {
 					}
 
 					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+						ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE,
+								CommandType.INDEPENDENT_STATEMENT, verfiedByDA);
 						currStmtPos++;
 					}
 				}
@@ -151,7 +157,8 @@ public class StatementExtractor {
 				// IF + INDP + ELSE
 				if (thenHints.get(i).isDummy()) {
 					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+						ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE,
+								CommandType.INDEPENDENT_STATEMENT, verfiedByDA);
 						spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 						spottedConditions.get(i).getThenStmt().setINDP();
 						currStmtPos++;
@@ -164,7 +171,8 @@ public class StatementExtractor {
 					// IF + THEN + ELSE
 				} else {
 					while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-						nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
+						ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE,
+								CommandType.THEN_STATEMENT, verfiedByDA);
 						spottedConditions.get(i).getThenStmt().addNodeToNodeList(nodes[currStmtPos]);
 						currStmtPos++;
 					}
@@ -173,7 +181,7 @@ public class StatementExtractor {
 								+ ".\n");
 					}
 				}
-				determineEndOfElse(nodes, spottedConditions, elseHints, graph); // updates spottedConditions
+				determineEndOfElse(nodes, spottedConditions, elseHints, graph, verfiedByDA); // updates spottedConditions
 			}
 
 			spottedConditions.get(i).setConditionBegin();
@@ -214,11 +222,12 @@ public class StatementExtractor {
 	 *            in the input text
 	 * @param i
 	 *            : number of the spotted conditions
+	 * @param verfiedByDA
 	 * @param currStmtPos
 	 *            : first word after if-statement
 	 */
 	private static void checkForFalseThenKeyword(INode[] nodes, List<ConditionContainer> spottedConditions, List<Keyword> thenHints, int i,
-			int endOfIfStmt, int nextStmt) { // If then-keyword has been chosen wrongly, check then-heuristic VP + NP
+			int endOfIfStmt, int nextStmt, boolean[] verfiedByDA) { // If then-keyword has been chosen wrongly, check then-heuristic VP + NP
 		int lookForVerb = endOfIfStmt;
 		boolean foundVerb = false; // If no verbs are found up to the next statement, break
 
@@ -258,17 +267,17 @@ public class StatementExtractor {
 
 		// Set nodes with cmdtype=null BEFORE this block to IF_STMT zu, overwrite nodes with cmdtype=INDP to cmdtype=THEN
 		for (int k = endOfIfStmt; k < lookForVerb; k++) {
-			nodes[k].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.IF_STATEMENT);
+			ConditionDetector.setNodeAttribute(nodes[k], k, COMMANDTYPE_ATTRIBUTE, CommandType.IF_STATEMENT, verfiedByDA);
 			spottedConditions.get(i).getIfStmt().addNodeToNodeList(nodes[k]);
 		}
 
 		for (int k = lookForVerb; k < endOfThen; k++) {
-			nodes[k].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
+			ConditionDetector.setNodeAttribute(nodes[k], k, COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT, verfiedByDA);
 		}
 		int indp = lookForVerb;
 		while (nodes[indp].getAttributeValue(COMMANDTYPE_ATTRIBUTE) != null
 				&& nodes[indp].getAttributeValue(COMMANDTYPE_ATTRIBUTE).equals(CommandType.INDEPENDENT_STATEMENT)) {
-			nodes[indp].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT);
+			ConditionDetector.setNodeAttribute(nodes[indp], indp, COMMANDTYPE_ATTRIBUTE, CommandType.THEN_STATEMENT, verfiedByDA);
 			indp++;
 			if (indp >= nodes.length) {
 				indp--;
@@ -281,8 +290,8 @@ public class StatementExtractor {
 		logger.debug("Found then-clause by not considering a spotted keyword from position" + lookForVerb + " to " + endOfThen + ".\n");
 	}
 
-	private static void determineEndOfElse(INode[] nodes, List<ConditionContainer> spottedConditions, List<Keyword> elseHints,
-			IGraph graph) {
+	private static void determineEndOfElse(INode[] nodes, List<ConditionContainer> spottedConditions, List<Keyword> elseHints, IGraph graph,
+			boolean[] verifiedByDA) {
 		for (int i = 0; i < elseHints.size(); i++) {
 			if (!elseHints.get(i).isDummy()) {
 				spottedConditions.get(i).setElseStmt(new ElseStatement(new ArrayList<INode>()));
@@ -304,7 +313,8 @@ public class StatementExtractor {
 
 					if (currStmtPos > corefSearchBegin) {
 						for (int j = corefSearchBegin; j <= currStmtPos; j++) {
-							nodes[j].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.ELSE_STATEMENT);
+							ConditionDetector.setNodeAttribute(nodes[j], j, COMMANDTYPE_ATTRIBUTE, CommandType.ELSE_STATEMENT,
+									verifiedByDA);
 							spottedConditions.get(i).getElseStmt().addNodeToNodeList(nodes[j]);
 						}
 						currStmtPos++;
@@ -312,7 +322,8 @@ public class StatementExtractor {
 				}
 
 				while (currStmtPos < nodes.length && nodes[currStmtPos].getAttributeValue(COMMANDTYPE_ATTRIBUTE) == null) {
-					nodes[currStmtPos].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+					ConditionDetector.setNodeAttribute(nodes[currStmtPos], currStmtPos, COMMANDTYPE_ATTRIBUTE,
+							CommandType.INDEPENDENT_STATEMENT, verifiedByDA);
 					currStmtPos++;
 				}
 			}
@@ -345,8 +356,8 @@ public class StatementExtractor {
 				if (targetEntityNode != null) {
 					INode target = getEndOfReference(targetEntityNode, graph);
 					if (target != null) {
-						if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || (spottedConditions.get(i).hasElseStmt()
-								&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target))) {
+						if (spottedConditions.get(i).getThenStmt().getNodeList().contains(target) || spottedConditions.get(i).hasElseStmt()
+								&& spottedConditions.get(i).getElseStmt().getNodeList().contains(target)) {
 							corefSearchIndex = j;
 							foundCoref = true;
 							logger.debug("Used coreference to spot the end of then-clause at position: " + corefSearchIndex + "\n");
@@ -441,18 +452,19 @@ public class StatementExtractor {
 	 *            of the graph
 	 * @param ifHints
 	 *            which are spotted in the graph
+	 * @param verifiedByDA
 	 */
-	private static void setCmdtypeIfNoStmtFound(INode[] nodes, List<Keyword> ifHints) {
+	private static void setCmdtypeIfNoStmtFound(INode[] nodes, List<Keyword> ifHints, boolean[] verifiedByDA) {
 		if (ifHints.isEmpty()) { // If no if-clauses found set cmdtype=INDP to all nodes of the input
 			for (int i = 0; i < nodes.length; i++) {
-				nodes[i].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+				ConditionDetector.setNodeAttribute(nodes[i], i, COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT, verifiedByDA);
 			}
 			logger.debug("Set commandtype INDP-Statement to complete text.");
 
 		} else { // If there are nodes before the first if-stmt with cmdtype=null, set cmdtype=INDP
 			int firstIfStmt = ifHints.get(0).getKeywordBegin();
 			for (int i = 0; i < firstIfStmt; i++) {
-				nodes[i].setAttributeValue(COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT);
+				ConditionDetector.setNodeAttribute(nodes[i], i, COMMANDTYPE_ATTRIBUTE, CommandType.INDEPENDENT_STATEMENT, verifiedByDA);
 			}
 		}
 	}

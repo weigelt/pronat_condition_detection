@@ -37,7 +37,7 @@ public class HeuristicCheckSNLP_IF {
 		createGraph(input);
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
-		HeuristicCheck.checkForIfClause(graph.getNodes().toArray(new ParseNode[0]), list);
+		HeuristicCheck.checkForIfClause(graph.getNodes().toArray(new ParseNode[0]), list, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 0; i < nodes.length; i++) {
@@ -52,7 +52,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 5; i++) {
 			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT));
@@ -67,7 +67,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 3; i++) {
 			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT));
@@ -84,12 +84,12 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 6; i++) {
-			System.out.println("word: " + nodes[i].getAttributeValue("value") + " " + "command: "
-					+ nodes[i].getAttributeValue("commandType"));
-			Assert.assertEquals((CommandType.IF_STATEMENT), (nodes[i].getAttributeValue("commandType")));
+			System.out.println(
+					"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
+			Assert.assertEquals(CommandType.IF_STATEMENT, nodes[i].getAttributeValue("commandType"));
 		}
 	}
 
@@ -100,7 +100,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 6; i++) {
 			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT));
@@ -115,7 +115,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 3; i++) {
 			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT));
@@ -129,7 +129,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 7; i++) {
 			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT));
@@ -144,7 +144,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		assertTrue(nodes[5].getAttributeValue("commandType").equals(CommandType.THEN_STATEMENT));
 	}
@@ -156,7 +156,7 @@ public class HeuristicCheckSNLP_IF {
 		List<Keyword> list = new ArrayList<Keyword>();
 		list.add(new Keyword(null, "if", 0, 0));
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
-		HeuristicCheck.checkForIfClause(nodes, list);
+		HeuristicCheck.checkForIfClause(nodes, list, new boolean[graph.getNodes().size()]);
 
 		for (int i = 0; i < 7; i++) {
 			assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.IF_STATEMENT));
