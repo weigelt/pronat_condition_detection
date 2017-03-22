@@ -17,7 +17,6 @@ import edu.kit.ipd.parse.luna.graph.ParseNode;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class CoreferenceTest {
-	private static final String COREF_ARC_TYPE = "coref";
 	ConditionDetector dt;
 	Token[] actual;
 	ShallowNLP snlp;
