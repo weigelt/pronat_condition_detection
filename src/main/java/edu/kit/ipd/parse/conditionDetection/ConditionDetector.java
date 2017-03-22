@@ -63,7 +63,7 @@ public class ConditionDetector extends AbstractAgent {
 		for (int i = 0; i < nodes.length; i++) {
 			INode node = nodes[i];
 			if (!node.getType().containsAttribute(CONDITION_TYPE_ATTRIBUTE, "String")) {
-				node.getType().addAttributeToType("String", "commandType");
+				node.getType().addAttributeToType("String", CONDITION_TYPE_ATTRIBUTE);
 			}
 			if (!node.getType().containsAttribute(CONDITION_NUMBER, "int")) {
 				node.getType().addAttributeToType("int", CONDITION_NUMBER);
