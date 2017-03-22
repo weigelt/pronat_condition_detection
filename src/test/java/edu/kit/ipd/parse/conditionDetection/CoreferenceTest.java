@@ -2,7 +2,6 @@ package edu.kit.ipd.parse.conditionDetection;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,10 +57,8 @@ public class CoreferenceTest {
 		} catch (IOException | URISyntaxException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
-		System.out.println(graph.toString());
 	}
 
 	//@Ignore

@@ -192,7 +192,6 @@ public class ConditionDetector extends AbstractAgent {
 	static void setNodeAttribute(INode node, int nodeIndex, String attrName, CommandType statement, boolean[] verifiedByDA) {
 		if (!verifiedByDA[nodeIndex]) {
 			node.setAttributeValue(attrName, statement);
-			System.out.println(node.toString() + " - Set attr: " + attrName + " - " + statement);
 		}
 	}
 
