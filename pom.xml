@@ -70,7 +70,6 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>luna</artifactId>
-			<version>0.3.6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
