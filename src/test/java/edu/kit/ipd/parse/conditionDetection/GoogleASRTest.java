@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
@@ -49,6 +50,7 @@ public class GoogleASRTest {
 		gb.init();
 	}
 
+	@Ignore
 	@Test
 	public void evalWithGoogleASR() {
 
@@ -103,6 +105,7 @@ public class GoogleASRTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void evalWithWatsonASR() {
 
