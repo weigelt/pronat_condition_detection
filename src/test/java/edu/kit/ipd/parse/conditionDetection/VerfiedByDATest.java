@@ -42,6 +42,7 @@ public class VerfiedByDATest {
 	@Test
 	public void simpleDATest() {
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
+		dt.exec();
 		mockDA(nodes);
 		dt.exec();
 		for (int i = 3; i < nodes.length; i++) {
