@@ -21,7 +21,6 @@ import edu.kit.ipd.parse.luna.graph.ParseNode;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class CoreferenceTest {
-	private static final String COREF_ARC_TYPE = "coref";
 	ConditionDetector dt;
 	Token[] actual;
 	ShallowNLP snlp;
@@ -61,7 +60,6 @@ public class CoreferenceTest {
 		} catch (IOException | URISyntaxException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
 	}

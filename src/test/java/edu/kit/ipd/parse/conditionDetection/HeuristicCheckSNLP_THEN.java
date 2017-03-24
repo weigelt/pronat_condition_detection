@@ -35,7 +35,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(CommandType.THEN_STATEMENT, "then", 5, 5));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 5; i < nodes.length; i++) {
@@ -49,7 +49,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(null, "DUMMY_KEYWORD", 9, 9));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		assertTrue(nodes[9].getAttributeValue("commandType").equals(CommandType.THEN_STATEMENT));
@@ -61,7 +61,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(CommandType.THEN_STATEMENT, "then", 0, 0));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 0; i < 5; i++) {
@@ -75,7 +75,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(CommandType.THEN_STATEMENT, "DUMMY_KEYWORD", 5, 5));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		assertTrue(nodes[5].getAttributeValue("commandType").equals(CommandType.THEN_STATEMENT));
@@ -88,7 +88,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(CommandType.THEN_STATEMENT, "tidy up", 5, 6));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 5; i < nodes.length; i++) {
@@ -102,7 +102,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(null, "DUMMY_KEYWORD", 1, 1));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 1; i < nodes.length; i++) {
@@ -116,7 +116,7 @@ public class HeuristicCheckSNLP_THEN {
 		createGraph(input);
 		List<Keyword> thenHints = new ArrayList<Keyword>();
 		thenHints.add(new Keyword(null, "DUMMY_KEYWORD", 1, 1));
-		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints);
+		HeuristicCheck.checkForThenClause(graph.getNodes().toArray(new ParseNode[0]), thenHints, new boolean[graph.getNodes().size()]);
 
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 1; i < nodes.length; i++) {

@@ -76,13 +76,13 @@ public class ConditionDetectorTest {
 		} catch (IOException | URISyntaxException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(Arrays.deepToString(actual));
+		//		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
-		System.out.println("Run first time");
+		//		System.out.println("Run first time");
 		dt.exec();
 		IGraph pg_first = graph.clone();
-		System.out.println(graph);
+		//		System.out.println(graph);
 		//		System.out.println("\nRun second time");
 		dt.exec();
 		//				System.out.println(pg_first);
