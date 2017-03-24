@@ -2,7 +2,6 @@ package edu.kit.ipd.parse.conditionDetection;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -33,16 +32,17 @@ public class ConditionDetectorTest {
 
 	@Test
 	public void executeProject() {
-		input = "Go to the fridge open the fridge if they are fresh oranges take the oranges and the water if there are no fresh oranges take the orange juice and the water close the fridge and take them to the table";
+		input = "armar please get me some vodka from the fridge if there are fresh oranges please bring them otherwise you have to give me the orange juice";
 		try {
 			actual = snlp.parse(input, null);
 		} catch (IOException | URISyntaxException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(Arrays.deepToString(actual));
+		//		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
 		dt.exec();
+		System.out.println(dt.getGraph().toString());
 
 		//showArcs();
 	}
@@ -104,7 +104,7 @@ public class ConditionDetectorTest {
 		} catch (IOException | URISyntaxException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(Arrays.deepToString(actual));
+		//		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
 		dt.setGraph(graph);
 		dt.exec();
