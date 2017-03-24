@@ -346,7 +346,7 @@ public class StatementExtractor {
 				INode targetEntityNode = null;
 				double confidence = 0.0d;
 				for (IArc arc : entityNode.getOutgoingArcsOfType(graph.getArcType("contextRelation"))) {
-					if (arc.getAttributeValue("name").equals("referentRelation")) {
+					if (arc.getAttributeValue("typeOfRelation").equals("referentRelation")) {
 						if ((double) arc.getAttributeValue("confidence") > confidence) {
 							targetEntityNode = arc.getTargetNode();
 							confidence = (double) arc.getAttributeValue("confidence");
