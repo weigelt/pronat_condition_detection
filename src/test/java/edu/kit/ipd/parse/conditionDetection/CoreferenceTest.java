@@ -3,7 +3,6 @@ package edu.kit.ipd.parse.conditionDetection;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -70,8 +69,8 @@ public class CoreferenceTest {
 		dt.exec();
 		ParseNode[] nodes = graph.getNodes().toArray(new ParseNode[0]);
 		for (int i = 8; i < nodes.length; i++) {
-			System.out.println(
-					"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
+			//			System.out.println(
+			//					"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
 			Assert.assertEquals(CommandType.INDEPENDENT_STATEMENT, nodes[i].getAttributeValue("commandType"));
 			//assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
 		}
@@ -104,9 +103,9 @@ public class CoreferenceTest {
 		for (Pair<Integer, Integer> pair : corefs) {
 			for (INode node : graph.getNodes()) {
 				if (node.getType().equals(graph.getNodeType("token"))) {
-					if (((Integer) node.getAttributeValue("position")) == pair.getLeft().intValue()) {
+					if ((Integer) node.getAttributeValue("position") == pair.getLeft().intValue()) {
 						corefBegin = node;
-					} else if (((Integer) node.getAttributeValue("position")) == pair.getRight().intValue()) {
+					} else if ((Integer) node.getAttributeValue("position") == pair.getRight().intValue()) {
 						corefEnd = node;
 					}
 				}
@@ -125,8 +124,8 @@ public class CoreferenceTest {
 		ParseNode[] nodes = dt.getGraph().getNodes().toArray(new ParseNode[0]);
 		for (int i = 3; i < nodes.length; i++) {
 			if (nodes[i].getType().getName().equals("token")) {
-				System.out.println(
-						"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
+				//				System.out.println(
+				//						"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
 				Assert.assertEquals(CommandType.THEN_STATEMENT, nodes[i].getAttributeValue("commandType"));
 			}
 		}
