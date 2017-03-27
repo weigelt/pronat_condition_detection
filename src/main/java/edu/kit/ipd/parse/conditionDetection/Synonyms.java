@@ -14,7 +14,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  * This class provides all valid synonyms of the commandpattern-keywords.
  * Synonyms are lists of String-lists, because synonyms can consist of more than
  * one word.
- * 
+ *
  * @author Vanessa Steurer
  *
  */
@@ -71,7 +71,7 @@ public class Synonyms {
 
 		for (String synonym : statementSynonyms) {
 			KeyPhrase currStatementSynonym = new KeyPhrase();
-			for (String s : synonym.split(" ")) {
+			for (String s : synonym.trim().split(" ")) {
 				currStatementSynonym.add(s);
 			}
 			list.add(currStatementSynonym);
