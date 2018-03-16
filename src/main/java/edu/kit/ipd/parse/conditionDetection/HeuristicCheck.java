@@ -157,8 +157,8 @@ public class HeuristicCheck {
 			if (!SyntaxHelper.isVerbPhrase(nodes, currStmt)) {
 				int endOfThenBlock = checkForAlternativeWordOrder(nodes, currStmt, nextStmt);
 				if (endOfThenBlock > currStmt) {
-					setCommandType(nodes, currStmt, endOfThenBlock, CommandType.THEN_STATEMENT, verfifiedByDA);
-					keyword.setKeyword(nodes[currStmt].getAttributeValue("value").toString());
+					setCommandType(nodes, currStmt - 1, endOfThenBlock, CommandType.THEN_STATEMENT, verfifiedByDA);
+					keyword.setKeyword(nodes[currStmt - 1].getAttributeValue("value").toString());
 					logger.debug("End of spotted then-clause with alternative word-order at position: " + endOfThenBlock + "\n");
 					continue;
 				}
