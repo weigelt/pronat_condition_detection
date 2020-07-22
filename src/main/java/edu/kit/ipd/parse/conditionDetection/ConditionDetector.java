@@ -38,11 +38,14 @@ public class ConditionDetector extends AbstractAgent {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConditionDetector.class);
 
+	public ConditionDetector() {
+		setId(ID);
+	}
+
 	@Override
 	public void init() {
 		firstRun = true;
 		synonyms = new Synonyms();
-		setId(ID);
 	}
 
 	@Override
@@ -145,14 +148,13 @@ public class ConditionDetector extends AbstractAgent {
 	}
 
 	/**
-	 * This method stores the nodes with type "token" in an array and returns
-	 * it.
+	 * This method stores the nodes with type "token" in an array and returns it.
 	 *
 	 * This project only uses the wordnodes (type = token) of the graph. It is
 	 * given, that these wordnodes are saved consecutive in LinkedHashSet, each
-	 * connected with an arc of type "relation". The returned array is no
-	 * deepcopy. It saves the references from each node in graph. By every
-	 * execution if this project, the array of this method has to be updated.
+	 * connected with an arc of type "relation". The returned array is no deepcopy.
+	 * It saves the references from each node in graph. By every execution if this
+	 * project, the array of this method has to be updated.
 	 *
 	 * @return nodesArray used in this project
 	 */
