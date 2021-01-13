@@ -206,13 +206,12 @@ public class StatementExtractor {
 	}
 
 	/**
-	 * This method looks again for then-Statements, considering the
-	 * null-sections after the if-Statement.
+	 * This method looks again for then-Statements, considering the null-sections
+	 * after the if-Statement.
 	 *
-	 * First check: The heuristic could have been failed and settet INDP,
-	 * because the chosen keyword is invalid. Therefore this method checks, if
-	 * the vP+NP heuristic passes, when it starts checking after directly after
-	 * if clause.
+	 * First check: The heuristic could have been failed and settet INDP, because
+	 * the chosen keyword is invalid. Therefore this method checks, if the vP+NP
+	 * heuristic passes, when it starts checking after directly after if clause.
 	 *
 	 * @param nodes
 	 *            of the graph
@@ -444,9 +443,9 @@ public class StatementExtractor {
 	}
 
 	/**
-	 * If no statements are found in the input text, the cmdtype-attribute of
-	 * every node has to be set to INDP-Stmt. Otherwise sets INDP-Stmt to nodes
-	 * till first spotted-If-Stmt/Keyword.
+	 * If no statements are found in the input text, the cmdtype-attribute of every
+	 * node has to be set to INDP-Stmt. Otherwise sets INDP-Stmt to nodes till first
+	 * spotted-If-Stmt/Keyword.
 	 *
 	 * @param nodes
 	 *            of the graph
@@ -470,13 +469,13 @@ public class StatementExtractor {
 	}
 
 	/**
-	 * Connects the modified nodes with the new arctype "statement" according to
-	 * the spotted conditions.
+	 * Connects the modified nodes with the new arctype "statement" according to the
+	 * spotted conditions.
 	 *
 	 * Each arc holds two attributes: first attribute: commandType. Gives the
 	 * cmdtype of the node which the arcs points to second abttribute:
-	 * commandTypeLocation. Gives the location of the node in the
-	 * conditionStatement (begin, mid, end).
+	 * commandTypeLocation. Gives the location of the node in the conditionStatement
+	 * (begin, mid, end).
 	 *
 	 * @param graph
 	 *            which is given, results has to be saved in it
@@ -493,8 +492,8 @@ public class StatementExtractor {
 			} else {
 				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
 			}
-			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, "String")) {
-				arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, CommandType.class.getName())) {
+				arcType.addAttributeToType(CommandType.class.getName(), COMMANDTYPE_ATTRIBUTE);
 			}
 			if (!arcType.containsAttribute(COMMANDTYPELOCATION_ATTRIBUTE, "String")) {
 				arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
@@ -518,8 +517,8 @@ public class StatementExtractor {
 			} else {
 				arcType = graph.createArcType(STATEMENT_ARC_TYPE);
 			}
-			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, "String")) {
-				arcType.addAttributeToType("String", COMMANDTYPE_ATTRIBUTE);
+			if (!arcType.containsAttribute(COMMANDTYPE_ATTRIBUTE, CommandType.class.getName())) {
+				arcType.addAttributeToType(CommandType.class.getName(), COMMANDTYPE_ATTRIBUTE);
 			}
 			if (!arcType.containsAttribute(COMMANDTYPELOCATION_ATTRIBUTE, "String")) {
 				arcType.addAttributeToType("String", COMMANDTYPELOCATION_ATTRIBUTE);
@@ -528,7 +527,7 @@ public class StatementExtractor {
 		}
 
 		if (spottedConditions.isEmpty()) { // Add INDP-arcs, if no if-clauses found
-			createStmtArcs(graph, nodes, arcType, 0, nodes.length - 1, "indp");
+			createStmtArcs(graph, nodes, arcType, 0, nodes.length - 1, CommandType.INDEPENDENT_STATEMENT);
 			logger.debug("Set commandtype of arcs and nodes to INDP");
 			return;
 		}
@@ -543,12 +542,12 @@ public class StatementExtractor {
 			int indpEnd = condition.getIfStmt().getBegin() - 1; // Add arcs between INDP-Stmt and before if-clause, if existent
 			int ifBegin = condition.getIfStmt().getBegin();
 			if (indpEnd > 0) { // Add arc from INDP to IF
-				createStmtArcs(graph, nodes, arcType, endCondBefore, indpEnd, "indp");
+				createStmtArcs(graph, nodes, arcType, endCondBefore, indpEnd, CommandType.INDEPENDENT_STATEMENT);
 				IArc arcToIf = graph.createArc(nodes[indpEnd], nodes[ifBegin], arcType);
-				createStmtConnectionArcs(arcToIf, "if");
+				createStmtConnectionArcs(arcToIf, CommandType.IF_STATEMENT);
 			}
 			int ifEnd = condition.getIfStmt().getEnd();
-			createStmtArcs(graph, nodes, arcType, ifBegin, ifEnd, "if"); // Add arcs between IF-Stmts
+			createStmtArcs(graph, nodes, arcType, ifBegin, ifEnd, CommandType.IF_STATEMENT); // Add arcs between IF-Stmts
 			setConditionNumber(condition, i);
 
 			if (condition.hasThenStmt()) { // If THEN exists, add arcs
@@ -556,38 +555,38 @@ public class StatementExtractor {
 
 				IArc arcIfToThen = graph.createArc(nodes[ifEnd], nodes[thenBegin], arcType);
 				if (!ConditionDetector.showDoubtfulResults && condition.getThenStmt().isINDP()) {
-					createStmtConnectionArcs(arcIfToThen, "indp");
+					createStmtConnectionArcs(arcIfToThen, CommandType.INDEPENDENT_STATEMENT);
 				} else {
-					createStmtConnectionArcs(arcIfToThen, "then"); // Add arc from IF to THEN
+					createStmtConnectionArcs(arcIfToThen, CommandType.THEN_STATEMENT); // Add arc from IF to THEN
 				}
 
 				int thenEnd = condition.getThenStmt().getEnd(); // Add arcs between THEN-Stmts
 				if (!ConditionDetector.showDoubtfulResults && condition.getThenStmt().isINDP()) {
-					createStmtArcs(graph, nodes, arcType, thenBegin, thenEnd, "indp");
+					createStmtArcs(graph, nodes, arcType, thenBegin, thenEnd, CommandType.INDEPENDENT_STATEMENT);
 				} else {
-					createStmtArcs(graph, nodes, arcType, thenBegin, thenEnd, "then");
+					createStmtArcs(graph, nodes, arcType, thenBegin, thenEnd, CommandType.THEN_STATEMENT);
 				}
 
 				if (condition.hasElseStmt()) { // If ELSE exists, add arcs
 					int elseBegin = condition.getElseStmt().getBegin();
 					IArc arcIfToElse = graph.createArc(nodes[ifEnd], nodes[elseBegin], arcType);
-					createStmtConnectionArcs(arcIfToElse, "else"); // Add arc between IF to ELSE
+					createStmtConnectionArcs(arcIfToElse, CommandType.ELSE_STATEMENT); // Add arc between IF to ELSE
 					int elseEnd = condition.getElseStmt().getEnd(); // Add arcs between ELSE-Stmts
-					createStmtArcs(graph, nodes, arcType, elseBegin, elseEnd, "else");
+					createStmtArcs(graph, nodes, arcType, elseBegin, elseEnd, CommandType.ELSE_STATEMENT);
 
 					int indpBegin = condition.getElseStmt().getEnd() + 1;
 					if (indpBegin < nodes.length) {
 						IArc arcThenToAfterStmt = graph.createArc(nodes[thenEnd], nodes[indpBegin], arcType);
-						createStmtConnectionArcs(arcThenToAfterStmt, "indp");// Add arcs from THEN to INDP (skips else)
+						createStmtConnectionArcs(arcThenToAfterStmt, CommandType.INDEPENDENT_STATEMENT);// Add arcs from THEN to INDP (skips else)
 						IArc arcElseToAfterStmt = graph.createArc(nodes[elseEnd], nodes[indpBegin], arcType);
-						createStmtConnectionArcs(arcElseToAfterStmt, "indp");// Add arcs from ELSE to INDP
+						createStmtConnectionArcs(arcElseToAfterStmt, CommandType.INDEPENDENT_STATEMENT);// Add arcs from ELSE to INDP
 					}
 
 				} else { // If no else exists, add arcs between THEN to INDP
 					int indpBegin = condition.getThenStmt().getEnd() + 1;
 					if (indpBegin < nodes.length) {
 						IArc arcThenToAfterStmt = graph.createArc(nodes[thenEnd], nodes[indpBegin], arcType);
-						createStmtConnectionArcs(arcThenToAfterStmt, "indp");
+						createStmtConnectionArcs(arcThenToAfterStmt, CommandType.INDEPENDENT_STATEMENT);
 					}
 				}
 
@@ -595,12 +594,12 @@ public class StatementExtractor {
 				int indpBegin = ifEnd + 1;
 				if (indpBegin < nodes.length) {
 					IArc arcIfToIndp = graph.createArc(nodes[ifEnd], nodes[indpBegin], arcType);
-					createStmtConnectionArcs(arcIfToIndp, "indp");
+					createStmtConnectionArcs(arcIfToIndp, CommandType.INDEPENDENT_STATEMENT);
 				}
 			}
 
 			if (i + 1 == spottedConditions.size()) {
-				createStmtArcs(graph, nodes, arcType, condition.getConditionEnd() + 1, nodes.length - 1, "indp");
+				createStmtArcs(graph, nodes, arcType, condition.getConditionEnd() + 1, nodes.length - 1, CommandType.INDEPENDENT_STATEMENT);
 			}
 		}
 		logger.debug("Set commandtype of arcs and nodes to the commandtype of the spotted statement.");
@@ -633,7 +632,7 @@ public class StatementExtractor {
 
 	}
 
-	private static void createStmtArcs(IGraph graph, INode[] nodes, IArcType arcType, int beginStmt, int endStmt, String stmt) {
+	private static void createStmtArcs(IGraph graph, INode[] nodes, IArcType arcType, int beginStmt, int endStmt, CommandType stmt) {
 
 		for (int j = beginStmt; j < endStmt; j++) {
 			IArc arc = graph.createArc(nodes[j], nodes[j + 1], arcType);
@@ -647,7 +646,7 @@ public class StatementExtractor {
 		}
 	}
 
-	private static void createStmtConnectionArcs(IArc arc, String stmt) {
+	private static void createStmtConnectionArcs(IArc arc, CommandType stmt) {
 		arc.setAttributeValue(COMMANDTYPE_ATTRIBUTE, stmt);
 		arc.setAttributeValue(COMMANDTYPELOCATION_ATTRIBUTE, "begin");
 	}

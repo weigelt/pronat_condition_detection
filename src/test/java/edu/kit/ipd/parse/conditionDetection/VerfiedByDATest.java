@@ -59,8 +59,8 @@ public class VerfiedByDATest {
 			if (!node.getType().containsAttribute("commandTypeVerified", "boolean")) {
 				node.getType().addAttributeToType("boolean", "commandTypeVerified");
 			}
-			if (!node.getType().containsAttribute("commandType", "String")) {
-				node.getType().addAttributeToType("String", "commandType");
+			if (!node.getType().containsAttribute("commandType", CommandType.class.getName())) {
+				node.getType().addAttributeToType(CommandType.class.getName(), "commandType");
 			}
 			node.setAttributeValue("commandType", CommandType.THEN_STATEMENT);
 			node.setAttributeValue("commandTypeVerified", true);

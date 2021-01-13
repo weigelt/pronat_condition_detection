@@ -134,8 +134,7 @@ public class HeuristicCheckSNLP_THEN {
 		}
 		System.out.println(Arrays.deepToString(actual));
 		graph = snlp.createParseGraph(actual);
-		graph.getNodes().iterator().next().getType().addAttributeToType("String", "commandType");
-		;
+		graph.getNodes().iterator().next().getType().addAttributeToType(CommandType.class.getName(), "commandType");
 		for (INode node : graph.getNodes()) {
 			node.setAttributeValue("commandType", null);
 		}

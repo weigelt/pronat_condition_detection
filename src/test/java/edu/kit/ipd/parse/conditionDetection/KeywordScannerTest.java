@@ -34,7 +34,7 @@ public class KeywordScannerTest {
 			wordType = graph.createNodeType(TOKEN_NODE_TYPE);
 		}
 		wordType.addAttributeToType("String", "value");
-		wordType.addAttributeToType("String", "commandType");
+		wordType.addAttributeToType(CommandType.class.getName(), "commandType");
 	}
 
 	@Ignore("Test has no assertion - so we can skip it")
