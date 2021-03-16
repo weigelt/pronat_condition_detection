@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.Properties;
 

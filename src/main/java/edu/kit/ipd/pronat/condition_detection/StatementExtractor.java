@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,10 @@ import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 
 /**
- * This class concadinates the spotted statements and fills the ContainerClasses
+ * This class concatenates the spotted statements and fills the ContainerClasses
  * with their belonging nodes.
  *
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  */
 public class StatementExtractor {

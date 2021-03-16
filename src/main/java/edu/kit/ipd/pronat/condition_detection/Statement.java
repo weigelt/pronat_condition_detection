@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 /**
  * Abstract class which provides the possible statement-types of an instruction.
  * 
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  */
 public abstract class Statement {

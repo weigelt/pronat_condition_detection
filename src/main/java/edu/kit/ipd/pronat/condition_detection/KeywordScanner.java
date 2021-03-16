@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +14,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
  * Static helperclass, which provides methods for scanning text on keywords of
  * if, then and else-clauses.
  *
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  */
 public class KeywordScanner {

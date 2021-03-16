@@ -1,10 +1,11 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 /**
  * This class represents a spotted keyword in the input text. The keywords can
  * consist of more than one word, this is the reason why there is a keywordBegin
  * and keywordEnd.
  * 
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  */
 public class Keyword {
@@ -20,7 +21,7 @@ public class Keyword {
 		this.keyword = keyword;
 		this.keywordBegin = keywordBegin;
 		this.keywordEnd = keywordEnd;
-		this.invalid = false;
+		invalid = false;
 	}
 
 	public CommandType getCmdtype() {
@@ -56,7 +57,7 @@ public class Keyword {
 	}
 
 	public boolean isDummy() {
-		return this.getKeyword().equals(DUMMY);
+		return getKeyword().equals(DUMMY);
 	}
 
 	public boolean isInvalid() {
@@ -64,7 +65,7 @@ public class Keyword {
 	}
 
 	public void setInvalid() {
-		this.invalid = true;
+		invalid = true;
 	}
 
 	@Override

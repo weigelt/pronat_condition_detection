@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +8,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 /**
  * Helperclass for the syntax functions.
  * 
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  *
  */

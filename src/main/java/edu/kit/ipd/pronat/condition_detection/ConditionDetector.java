@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  * uses the configsetting which are provided in the configfile, searches for
  * conditional statements and saves the results in the graph by transforming it.
  *
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  */
 @MetaInfServices(AbstractAgent.class)

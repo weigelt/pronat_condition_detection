@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import edu.kit.ipd.parse.luna.graph.INode;
 /**
  * This class represents a then-clause.
  * 
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  *
  */
@@ -16,11 +17,11 @@ public class ThenStatement extends Statement {
 	private boolean isINDPstmt;
 
 	public ThenStatement(List<INode> nodeList) {
-		this.cmdtype = CommandType.THEN_STATEMENT;
+		cmdtype = CommandType.THEN_STATEMENT;
 		this.nodeList = nodeList;
-		this.isINDPstmt = false;
-		this.begin = Integer.MAX_VALUE;
-		this.end = Integer.MIN_VALUE;
+		isINDPstmt = false;
+		begin = Integer.MAX_VALUE;
+		end = Integer.MIN_VALUE;
 	}
 
 	public void addNodeToNodeList(INode node) {

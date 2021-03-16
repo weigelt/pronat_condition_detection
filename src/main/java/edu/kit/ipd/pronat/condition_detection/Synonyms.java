@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +15,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
  * Synonyms are lists of String-lists, because synonyms can consist of more than
  * one word.
  *
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  *
  */

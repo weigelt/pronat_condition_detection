@@ -1,24 +1,25 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import edu.kit.ipd.parse.luna.graph.INode;
 
 /**
- * This class represents an else-clause.
+ * This class represents an if-clause.
  * 
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  *
  */
-public class ElseStatement extends Statement {
+public class IfStatement extends Statement {
 	private int begin;
 	private int end;
 
-	public ElseStatement(List<INode> nodeList) {
-		this.cmdtype = CommandType.ELSE_STATEMENT;
-		this.nodeList = nodeList;
-		this.begin = Integer.MAX_VALUE;
-		this.end = Integer.MIN_VALUE;
+	public IfStatement(ArrayList<INode> arrayList) {
+		cmdtype = CommandType.IF_STATEMENT;
+		nodeList = arrayList;
+		begin = Integer.MAX_VALUE;
+		end = Integer.MIN_VALUE;
 	}
 
 	public void addNodeToNodeList(INode node) {
@@ -26,6 +27,7 @@ public class ElseStatement extends Statement {
 		if (begin > (int) node.getAttributeValue("position")) {
 			begin = (int) node.getAttributeValue("position");
 		}
+
 		if (end < (int) node.getAttributeValue("position")) {
 			end = (int) node.getAttributeValue("position");
 		}

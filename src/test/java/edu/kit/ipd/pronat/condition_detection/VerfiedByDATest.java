@@ -1,17 +1,17 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
+import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.kit.ipd.parse.luna.data.token.Token;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.ParseNode;
-import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class VerfiedByDATest {
 

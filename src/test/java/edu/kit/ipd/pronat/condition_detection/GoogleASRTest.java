@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -10,27 +10,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.ipd.pronat.graph_builder.GraphBuilder;
+import edu.kit.ipd.pronat.multiasr.asr.ASROutput;
+import edu.kit.ipd.pronat.multiasr.asr.GoogleASR;
+import edu.kit.ipd.pronat.multiasr.asr.WatsonASR;
+import edu.kit.ipd.pronat.multiasr.asr.spi.IASR;
+import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
+import edu.kit.ipd.pronat.prepipedatamodel.token.MainHypothesisToken;
+import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
+import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import edu.kit.ipd.parse.graphBuilder.GraphBuilder;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
-import edu.kit.ipd.parse.luna.data.PrePipelineData;
-import edu.kit.ipd.parse.luna.data.token.MainHypothesisToken;
-import edu.kit.ipd.parse.luna.data.token.Token;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
-import edu.kit.ipd.parse.multiasr.asr.ASROutput;
-import edu.kit.ipd.parse.multiasr.asr.GoogleASR;
-import edu.kit.ipd.parse.multiasr.asr.WatsonASR;
-import edu.kit.ipd.parse.multiasr.asr.spi.IASR;
-import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class GoogleASRTest {
 
-	private static final String TEST_FILE_PATH = "/home/seb/seb/vcs/GIT/parse/Abschlussarbeiten/steurer_ba/Evaluation/audios/scene5_19.flac";
+	private static final String TEST_FILE_PATH = "";
 	ConditionDetector dt;
 	Token[] actual;
 	ShallowNLP snlp;

@@ -1,9 +1,10 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 /**
- * This class represents one Statement, consisting of an If-, Then- and optional Else-section.
- * Each of these Statements holds a list of all belonging nodes.
- * 
+ * This class represents one Statement, consisting of an If-, Then- and optional
+ * Else-section. Each of these Statements holds a list of all belonging nodes.
+ *
+ * @author Sebastian Weigelt
  * @author Vanessa Steurer
  */
 public class ConditionContainer {
@@ -12,32 +13,32 @@ public class ConditionContainer {
 	private ElseStatement elseStmt;
 	private int conditionBegin;
 	private int conditionEnd;
-	
+
 	public ConditionContainer(IfStatement ifStmt, ThenStatement thenStmt, ElseStatement elseStmt) {
 		this.ifStmt = ifStmt;
 		this.thenStmt = thenStmt;
 		this.elseStmt = elseStmt;
 	}
-	
+
 	public boolean hasThenStmt() {
 		return thenStmt != null;
 	}
-	
+
 	public boolean hasElseStmt() {
 		return elseStmt != null;
 	}
-	
+
 	public int setConditionBegin() {
-		return this.conditionBegin = ifStmt.getBegin();
+		return conditionBegin = ifStmt.getBegin();
 	}
-	
+
 	public int setConditionEnd() {
 		if (hasElseStmt()) {
-			return this.conditionEnd = elseStmt.getEnd();
-		} else if (hasThenStmt()){
-			return this.conditionEnd = thenStmt.getEnd();	
+			return conditionEnd = elseStmt.getEnd();
+		} else if (hasThenStmt()) {
+			return conditionEnd = thenStmt.getEnd();
 		} else {
-			return this.conditionEnd = ifStmt.getEnd();
+			return conditionEnd = ifStmt.getEnd();
 		}
 	}
 
@@ -64,11 +65,11 @@ public class ConditionContainer {
 	public void setElseStmt(ElseStatement elseStmt) {
 		this.elseStmt = elseStmt;
 	}
-	
+
 	public int getConditionBegin() {
 		return conditionBegin;
 	}
-	
+
 	public int getConditionEnd() {
 		return conditionEnd;
 	}

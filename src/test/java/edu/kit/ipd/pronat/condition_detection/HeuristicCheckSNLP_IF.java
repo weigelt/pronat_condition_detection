@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import static org.junit.Assert.assertTrue;
 
@@ -8,16 +8,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
+import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import edu.kit.ipd.parse.luna.data.token.Token;
 import edu.kit.ipd.parse.luna.graph.IGraph;
 import edu.kit.ipd.parse.luna.graph.INode;
 import edu.kit.ipd.parse.luna.graph.ParseNode;
-import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class HeuristicCheckSNLP_IF {
 	private ShallowNLP snlp;

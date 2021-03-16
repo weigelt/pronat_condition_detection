@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.conditionDetection;
+package edu.kit.ipd.pronat.condition_detection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
