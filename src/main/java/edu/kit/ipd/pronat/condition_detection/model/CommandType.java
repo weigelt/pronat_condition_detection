@@ -1,4 +1,4 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 /**
  * This class represents all possible commandtypes of an instruction.
@@ -15,7 +15,8 @@ public enum CommandType {
 		this.tag = tag;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return getTag();
 	}
 

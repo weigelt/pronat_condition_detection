@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import edu.kit.ipd.pronat.condition_detection.model.CommandType;
+import edu.kit.ipd.pronat.condition_detection.model.ConditionContainer;
+import edu.kit.ipd.pronat.condition_detection.model.Keyword;
+import edu.kit.ipd.pronat.condition_detection.model.Synonyms;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +23,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
 /**
  * This is the 'main'-class which starts the condition-detection-algorithm. It
- * uses the configsetting which are provided in the configfile, searches for
+ * uses the config setting, which are provided in the configfile, searches for
  * conditional statements and saves the results in the graph by transforming it.
  *
  * @author Sebastian Weigelt
@@ -31,7 +35,11 @@ public class ConditionDetector extends AbstractAgent {
 	private static final String CONDITION_TYPE_ATTRIBUTE = "commandType";
 	private static final String VERIFIED_BY_DA_SUFFIX = "Verified";
 	public static final String ID = "condition_detector";
+
 	private Synonyms synonyms;
+
+	Properties props = ConfigManager.getConfiguration(ConditionDetector.class);
+
 	public static boolean useCoreference;
 	public static boolean compensateSNLP;
 	public static boolean showDoubtfulResults;
@@ -46,14 +54,17 @@ public class ConditionDetector extends AbstractAgent {
 	@Override
 	public void init() {
 		firstRun = true;
+		// Load synonyms and config-data
 		synonyms = new Synonyms();
+		synonyms.importSynonyms();
+		Properties props = ConfigManager.getConfiguration(ConditionDetector.class);
+		useCoreference = Boolean.parseBoolean(props.getProperty("useCoreference", "true"));
+		compensateSNLP = Boolean.parseBoolean(props.getProperty("compensateSNLP", "true"));
+		showDoubtfulResults = Boolean.parseBoolean(props.getProperty("showDoubtfulResults", "true"));
 	}
 
 	@Override
 	public void exec() {
-		// Load synonyms and config-data
-		synonyms.importSynonyms();
-		setConfigs();
 
 		// Readout nodes of the graph and add a commandType attribute to each of them
 		INode[] nodes = null;
@@ -101,7 +112,7 @@ public class ConditionDetector extends AbstractAgent {
 	 * @param nodes
 	 *            containing the input words
 	 * @param verifiedConditions
-	 * @param verifiedConditions
+	 *            the previously verified conditions
 	 * @return condition spotted in the input
 	 */
 	private List<ConditionContainer> lookForConditionalClauses(INode[] nodes, IGraph graph, boolean[] verifiedConditions) {
@@ -136,16 +147,6 @@ public class ConditionDetector extends AbstractAgent {
 			s = s.concat(nodes[i].getAttributeValue("value").toString() + "|" + nodes[i].getAttributeValue("commandType").toString() + " ");
 		}
 		System.out.println(s + "\n");
-	}
-
-	/**
-	 * This method loads the configparameters.
-	 */
-	public void setConfigs() {
-		Properties props = ConfigManager.getConfiguration(ConditionDetector.class);
-		useCoreference = props.getProperty("useCoreference").equalsIgnoreCase("TRUE");
-		compensateSNLP = props.getProperty("compensateSNLP").equalsIgnoreCase("TRUE");
-		showDoubtfulResults = props.getProperty("showDoubtfulResults").equalsIgnoreCase("TRUE");
 	}
 
 	/**

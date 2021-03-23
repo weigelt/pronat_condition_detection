@@ -1,4 +1,4 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 import java.util.List;
 

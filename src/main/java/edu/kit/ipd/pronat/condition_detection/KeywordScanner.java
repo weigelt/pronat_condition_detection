@@ -5,6 +5,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import edu.kit.ipd.pronat.condition_detection.model.CommandType;
+import edu.kit.ipd.pronat.condition_detection.model.KeyPhrase;
+import edu.kit.ipd.pronat.condition_detection.model.Keyword;
+import edu.kit.ipd.pronat.condition_detection.model.Synonyms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

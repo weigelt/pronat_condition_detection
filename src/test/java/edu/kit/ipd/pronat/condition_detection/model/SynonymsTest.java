@@ -1,14 +1,15 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 import java.util.Properties;
 
+import edu.kit.ipd.pronat.condition_detection.model.Synonyms;
 import org.junit.Assert;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
 /**
- * This Testclass tests the correct import of the commandpattern-synonyms of
+ * This test class tests the correct import of the commandpattern-synonyms of
  * If/Then/Else.
  */
 public class SynonymsTest {

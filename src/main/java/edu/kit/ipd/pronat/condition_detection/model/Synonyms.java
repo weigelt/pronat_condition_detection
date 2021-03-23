@@ -1,10 +1,11 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import edu.kit.ipd.pronat.condition_detection.SyntaxHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

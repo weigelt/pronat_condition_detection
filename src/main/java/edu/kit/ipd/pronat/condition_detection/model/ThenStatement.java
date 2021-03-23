@@ -1,23 +1,25 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 import java.util.List;
 
 import edu.kit.ipd.parse.luna.graph.INode;
 
 /**
- * This class represents an else-clause.
+ * This class represents a then-clause.
  * 
  * @author Sebastian Weigelt
  * @author Vanessa Steurer
  *
  */
-public class ElseStatement extends Statement {
+public class ThenStatement extends Statement {
 	private int begin;
 	private int end;
+	private boolean isINDPstmt;
 
-	public ElseStatement(List<INode> nodeList) {
-		cmdtype = CommandType.ELSE_STATEMENT;
+	public ThenStatement(List<INode> nodeList) {
+		cmdtype = CommandType.THEN_STATEMENT;
 		this.nodeList = nodeList;
+		isINDPstmt = false;
 		begin = Integer.MAX_VALUE;
 		end = Integer.MIN_VALUE;
 	}
@@ -30,6 +32,14 @@ public class ElseStatement extends Statement {
 		if (end < (int) node.getAttributeValue("position")) {
 			end = (int) node.getAttributeValue("position");
 		}
+	}
+
+	public boolean isINDP() {
+		return isINDPstmt;
+	}
+
+	public void setINDP() {
+		isINDPstmt = true;
 	}
 
 	public int getBegin() {

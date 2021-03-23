@@ -3,6 +3,7 @@ package edu.kit.ipd.pronat.condition_detection;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import edu.kit.ipd.pronat.condition_detection.model.CommandType;
 import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
 import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
 import org.junit.Assert;

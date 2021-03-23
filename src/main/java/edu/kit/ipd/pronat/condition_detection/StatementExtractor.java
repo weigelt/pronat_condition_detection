@@ -3,6 +3,7 @@ package edu.kit.ipd.pronat.condition_detection;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kit.ipd.pronat.condition_detection.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

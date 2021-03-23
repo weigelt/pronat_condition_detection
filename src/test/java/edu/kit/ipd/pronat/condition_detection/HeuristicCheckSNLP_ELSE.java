@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.kit.ipd.pronat.condition_detection.model.CommandType;
+import edu.kit.ipd.pronat.condition_detection.model.Keyword;
 import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
 import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
 import org.junit.Assert;
@@ -28,7 +30,6 @@ public class HeuristicCheckSNLP_ELSE {
 	public static void init() {
 		ConditionDetector cd = new ConditionDetector();
 		cd.init();
-		cd.setConfigs();
 	}
 
 	@Test
@@ -45,9 +46,8 @@ public class HeuristicCheckSNLP_ELSE {
 		}
 	}
 
-	@Ignore
 	@Test
-	public void indpStatement() {
+	public void elseStatement() {
 		String input = "If the dog barks he is angry else he wags his tail";
 		createGraph(input);
 		List<Keyword> elseHints = new ArrayList<Keyword>();
@@ -58,7 +58,7 @@ public class HeuristicCheckSNLP_ELSE {
 		for (int i = 7; i < nodes.length; i++) {
 			System.out.println(
 					"word: " + nodes[i].getAttributeValue("value") + " " + "command: " + nodes[i].getAttributeValue("commandType"));
-			Assert.assertEquals(CommandType.INDEPENDENT_STATEMENT, nodes[i].getAttributeValue("commandType"));
+			Assert.assertEquals(CommandType.ELSE_STATEMENT, nodes[i].getAttributeValue("commandType"));
 			//assertTrue(nodes[i].getAttributeValue("commandType").equals(CommandType.INDEPENDENT_STATEMENT));
 		}
 	}

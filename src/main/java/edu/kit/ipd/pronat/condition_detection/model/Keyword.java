@@ -1,4 +1,4 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 /**
  * This class represents a spotted keyword in the input text. The keywords can

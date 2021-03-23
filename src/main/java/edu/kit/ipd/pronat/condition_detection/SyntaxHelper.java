@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.kit.ipd.parse.luna.graph.INode;
+import edu.kit.ipd.pronat.condition_detection.model.KeyPhrase;
 
 /**
  * Helperclass for the syntax functions.

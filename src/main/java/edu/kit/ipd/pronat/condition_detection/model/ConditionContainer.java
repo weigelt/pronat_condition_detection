@@ -1,4 +1,4 @@
-package edu.kit.ipd.pronat.condition_detection;
+package edu.kit.ipd.pronat.condition_detection.model;
 
 /**
  * This class represents one Statement, consisting of an If-, Then- and optional

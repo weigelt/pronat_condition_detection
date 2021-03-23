@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.kit.ipd.pronat.condition_detection.model.CommandType;
+import edu.kit.ipd.pronat.condition_detection.model.Keyword;
 import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
 import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
 import org.junit.Assert;
@@ -28,7 +30,6 @@ public class HeuristicCheckSNLP_IF {
 	public static void init() {
 		ConditionDetector cd = new ConditionDetector();
 		cd.init();
-		cd.setConfigs();
 	}
 
 	@Test
