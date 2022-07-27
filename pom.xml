@@ -10,13 +10,6 @@
     <artifactId>condition_detection</artifactId>
     <version>0.0.5-SNAPSHOT</version>
     <name>Condition Detector</name>
-    <repositories>
-        <repository>
-            <id>ipdNexus-public-all</id>
-            <name>IPD-Repository</name>
-            <url>https://bob.ipd.kit.edu/nexus/repository/maven-public-all</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
